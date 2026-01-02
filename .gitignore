@@ -1,0 +1,49 @@
+# ==========================================
+# CodeBites - Unified GitIgnore (.NET + React)
+# ==========================================
+
+# --- OS Specific Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Node.js / React (Frontend) ---
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# --- .NET (Backend) ---
+# Build results
+backend/**/bin/
+backend/**/obj/
+backend/**/publish/
+
+# Visual Studio / VS Code / JetBrains Rider
+backend/.vs/
+backend/.idea/
+backend/*.user
+backend/*.userosscache
+backend/*.sln.docstates
+backend/.vscode/
+
+# User-specific files (Secrets & Settings)
+backend/**/appsettings.Development.json
+backend/**/appsettings.Local.json
+
+# Entity Framework / Databases
+*.db
+*.db-shm
+*.db-wal
+backend/**/Migrations/*.designer.cs
+
+# --- General Tooling ---
+.editorconfig
+.cache/
