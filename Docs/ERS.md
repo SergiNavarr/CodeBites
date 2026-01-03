@@ -57,3 +57,9 @@ El proyecto **CodeBites** consiste en el diseño y desarrollo de una plataforma 
 
 # 4. Metodología y Planificación
 Se adopta un ciclo de vida incremental con enfoque ágil. El desarrollo se dividirá en módulos (Análisis, Backend Core, Frontend, Integración y Deploy), permitiendo entregas funcionales constantes y documentación técnica actualizada en cada etapa.
+
+# 5. Apendices
+
+## 5.1 DER Conceptual
+
+![DER_conceptual](DER-conceptual.png)
