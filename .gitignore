@@ -26,13 +26,16 @@ backend/**/bin/
 backend/**/obj/
 backend/**/publish/
 
-# Visual Studio / VS Code / JetBrains Rider
-backend/.vs/
-backend/.idea/
-backend/*.user
-backend/*.userosscache
-backend/*.sln.docstates
-backend/.vscode/
+# Visual Studio / VS Code
+[Bb]ackend/.vs/
+.vs/
+**/.vs/
+**/.vs/**
+*.vsidx
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 
 # User-specific files (Secrets & Settings)
 backend/**/appsettings.Development.json
@@ -42,7 +45,6 @@ backend/**/appsettings.Local.json
 *.db
 *.db-shm
 *.db-wal
-backend/**/Migrations/*.designer.cs
 
 # --- General Tooling ---
 .editorconfig
