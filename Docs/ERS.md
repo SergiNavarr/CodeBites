@@ -109,6 +109,15 @@ RF#01, RF#09, RNF#02, RNF#05
 1. El perfil debe mostrar `total_points` y `current_streak` consultados en tiempo real.  
 2. Si el usuario solicita la baja, el sistema debe cambiar `is_active` a `false` (Soft Delete), impidiendo el login pero preservando sus datos históricos.
 
+## Historia de Usuario 1.4: Cierre de Sesión (Logout)
+
+**COMO** Estudiante.  
+**QUIERO** cerrar mi sesión de forma segura.  
+**PARA** proteger mi cuenta cuando dejo de usar la plataforma.
+
+### Criterio de Aceptación
+- El sistema debe invalidar el acceso del cliente.
+
 
 ### 4.1.2 ÉPICA 2: Experiencia de Aprendizaje
 
