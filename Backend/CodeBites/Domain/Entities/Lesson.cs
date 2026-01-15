@@ -13,6 +13,7 @@ namespace Domain.Entities
         public string Content { get; set; } = string.Empty;
         public int Difficulty { get; set; }
         public int PointsReward { get; set; }
+        public int Order { get; set; }
         public Guid CategoryId { get; set; }
         public virtual Category Category { get; set; } = null!;
         public virtual Quiz? Quiz { get; set; }

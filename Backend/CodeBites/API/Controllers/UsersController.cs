@@ -50,7 +50,6 @@ namespace API.Controllers
         [HttpGet("me")]
         public async Task<ActionResult<UserResponseDto>> GetMe()
         {
-            // Extraemos el ID del usuario desde el Claim del Token JWT
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
             if (userIdClaim == null) return Unauthorized();
 

@@ -31,6 +31,10 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(c => c.IconUrl)
                 .HasMaxLength(255);
 
+            builder.Property(c => c.Icon).HasMaxLength(50);
+
+            builder.Property(c => c.Color).HasMaxLength(7);
+
             // Relación 1:N con Lesson
             builder.HasMany(c => c.Lessons)
                 .WithOne(l => l.Category)
