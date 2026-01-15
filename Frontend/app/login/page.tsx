@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { apiClient } from "@/lib/api-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -26,12 +27,12 @@ export default function LoginPage() {
     const password = formData.get("password") as string
 
     try {
-      // Simulate API call - replace with actual apiClient.login()
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      console.log("Login attempt:", { email, password })
+
+      await apiClient.login(email, password)
       router.push("/dashboard")
-    } catch {
-      setError("Invalid email or password")
+      router.refresh()
+    } catch (err: any) {
+      setError(err.message || "Invalid email or password.")
     } finally {
       setIsLoading(false)
     }

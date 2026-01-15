@@ -68,5 +68,15 @@ namespace Application.Services
 
             return response;
         }
+
+        public async Task<bool> DeactivateAccountAsync(Guid userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null) return false;
+
+            user.IsActive = false;
+            await _userRepository.SaveChangesAsync();
+            return true;
+        }
     }
 }

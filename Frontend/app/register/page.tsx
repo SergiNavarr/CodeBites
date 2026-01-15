@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { apiClient } from "@/lib/api-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -27,12 +28,12 @@ export default function RegisterPage() {
     const password = formData.get("password") as string
 
     try {
-      // Simulate API call - replace with actual apiClient.register()
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      console.log("Register attempt:", { username, email, password })
-      router.push("/dashboard")
-    } catch {
-      setError("Registration failed. Please try again.")
+      await apiClient.register(username, email, password)
+    
+      router.push("/login")
+      router.refresh() 
+    } catch(err: any) {
+      setError(err.message || "Registration failed. Please try again.")
     } finally {
       setIsLoading(false)
     }

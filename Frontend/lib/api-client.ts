@@ -1,6 +1,6 @@
 import type { User, AuthResponse, Category, Lesson, ApiError } from "./types"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://localhost:7122/api"
 
 class ApiClient {
   private token: string | null = null
@@ -52,7 +52,7 @@ class ApiClient {
 
   // Auth endpoints
   async login(email: string, password: string): Promise<AuthResponse> {
-    const response = await this.request<AuthResponse>("/auth/login", {
+    const response = await this.request<AuthResponse>("/users/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     })
@@ -61,7 +61,7 @@ class ApiClient {
   }
 
   async register(username: string, email: string, password: string): Promise<AuthResponse> {
-    const response = await this.request<AuthResponse>("/auth/register", {
+    const response = await this.request<AuthResponse>("/users/register", {
       method: "POST",
       body: JSON.stringify({ username, email, password }),
     })
