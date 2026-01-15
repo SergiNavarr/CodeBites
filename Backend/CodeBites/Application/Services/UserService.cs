@@ -78,5 +78,12 @@ namespace Application.Services
             await _userRepository.SaveChangesAsync();
             return true;
         }
+
+        public async Task<UserResponseDto> GetByIdAsync(Guid userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null) throw new Exception("Usuario no encontrado.");
+            return _mapper.Map<UserResponseDto>(user);
+        }
     }
 }

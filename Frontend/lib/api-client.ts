@@ -1,121 +1,95 @@
-import type { User, AuthResponse, Category, Lesson, ApiError } from "./types"
+"use client"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://localhost:7122/api"
 
 class ApiClient {
-  private token: string | null = null
+  private baseUrl: string
 
-  setToken(token: string | null) {
-    this.token = token
-    if (typeof window !== "undefined") {
-      if (token) {
-        localStorage.setItem("auth_token", token)
-      } else {
-        localStorage.removeItem("auth_token")
-      }
-    }
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl
   }
 
-  getToken(): string | null {
-    if (this.token) return this.token
+  // Gestión interna del Token JWT
+  private getToken(): string | null {
     if (typeof window !== "undefined") {
       return localStorage.getItem("auth_token")
     }
     return null
   }
 
+  public setToken(token: string) {
+    localStorage.setItem("auth_token", token)
+  }
+
+  public removeToken() {
+    localStorage.removeItem("auth_token")
+  }
+
+  /**
+   * Método privado centralizador de peticiones.
+   * Maneja headers, inyección de JWT y errores globales.
+   */
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`
+    const url = `${this.baseUrl}${endpoint}`
     const token = this.getToken()
 
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
+    const headers = new Headers(options.headers)
+    headers.set("Content-Type", "application/json")
+    
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`)
     }
 
-    const response = await fetch(url, {
+    const config: RequestInit = {
       ...options,
       headers,
-    })
-
-    if (!response.ok) {
-      const error: ApiError = await response.json().catch(() => ({
-        message: "An error occurred",
-        statusCode: response.status,
-      }))
-      throw error
     }
 
-    return response.json()
+    try {
+      const response = await fetch(url, config)
+
+      if (response.status === 401) {
+        this.removeToken()
+      }
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || data.title || "Something went wrong")
+      }
+
+      return data as T
+    } catch (error) {
+      console.error(`API Error [${url}]:`, error)
+      throw error
+    }
   }
 
-  // Auth endpoints
-  async login(email: string, password: string): Promise<AuthResponse> {
-    const response = await this.request<AuthResponse>("/users/login", {
+  /**
+   * MÉTODOS PÚBLICOS
+   */
+  
+  public async get<T>(endpoint: string): Promise<T> {
+    return this.request<T>(endpoint, { method: "GET" })
+  }
+
+  public async post<T>(endpoint: string, body?: any): Promise<T> {
+    return this.request<T>(endpoint, {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: body ? JSON.stringify(body) : undefined,
     })
-    this.setToken(response.token)
-    return response
   }
 
-  async register(username: string, email: string, password: string): Promise<AuthResponse> {
-    const response = await this.request<AuthResponse>("/users/register", {
-      method: "POST",
-      body: JSON.stringify({ username, email, password }),
-    })
-    this.setToken(response.token)
-    return response
-  }
-
-  async logout(): Promise<void> {
-    this.setToken(null)
-  }
-
-  // User endpoints
-  async getCurrentUser(): Promise<User> {
-    return this.request<User>("/users/me")
-  }
-
-  async updateUser(data: Partial<User>): Promise<User> {
-    return this.request<User>("/users/me", {
+  public async put<T>(endpoint: string, body?: any): Promise<T> {
+    return this.request<T>(endpoint, {
       method: "PUT",
-      body: JSON.stringify(data),
+      body: body ? JSON.stringify(body) : undefined,
     })
   }
 
-  async deactivateAccount(): Promise<void> {
-    await this.request("/users/me/deactivate", {
-      method: "POST",
-    })
-    this.setToken(null)
-  }
-
-  // Categories endpoints
-  async getCategories(): Promise<Category[]> {
-    return this.request<Category[]>("/categories")
-  }
-
-  async getCategory(id: string): Promise<Category> {
-    return this.request<Category>(`/categories/${id}`)
-  }
-
-  // Lessons endpoints
-  async getLessons(categoryId: string): Promise<Lesson[]> {
-    return this.request<Lesson[]>(`/categories/${categoryId}/lessons`)
-  }
-
-  async getLesson(categoryId: string, lessonId: string): Promise<Lesson> {
-    return this.request<Lesson>(`/categories/${categoryId}/lessons/${lessonId}`)
-  }
-
-  async completeLesson(categoryId: string, lessonId: string): Promise<{ points: number; newStreak: number }> {
-    return this.request(`/categories/${categoryId}/lessons/${lessonId}/complete`, {
-      method: "POST",
-    })
+  public async delete<T>(endpoint: string): Promise<T> {
+    return this.request<T>(endpoint, { method: "DELETE" })
   }
 }
 
-export const apiClient = new ApiClient()
-export default apiClient
+export const apiClient = new ApiClient(API_BASE_URL)

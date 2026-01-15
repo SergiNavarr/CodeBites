@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.User;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -43,6 +44,23 @@ namespace API.Controllers
             {
                 return Unauthorized(new { message = ex.Message });
             }
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<ActionResult<UserResponseDto>> GetMe()
+        {
+            // Extraemos el ID del usuario desde el Claim del Token JWT
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null) return Unauthorized();
+
+            var userId = Guid.Parse(userIdClaim.Value);
+
+            var user = await _userService.GetByIdAsync(userId);
+
+            if (user == null) return NotFound();
+
+            return Ok(user);
         }
     }
 }
