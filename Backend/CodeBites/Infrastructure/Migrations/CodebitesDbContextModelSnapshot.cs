@@ -250,11 +250,28 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("c2d6f83a-1234-5678-90ab-cdef12345678"),
+                            CreatedAt = new DateTime(2026, 1, 13, 15, 19, 16, 147, DateTimeKind.Utc).AddTicks(888),
+                            IsActive = true,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"),
+                            CreatedAt = new DateTime(2026, 1, 13, 15, 19, 16, 147, DateTimeKind.Utc).AddTicks(891),
+                            IsActive = true,
+                            Name = "User"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>

@@ -6,38 +6,47 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+*.swp
 
-# --- Node.js / React (Frontend) ---
+# --- Node.js / React / Next.js (Frontend) ---
 frontend/node_modules/
-frontend/dist/
+frontend/.next/
+frontend/out/
 frontend/build/
-frontend/.env
-frontend/.env.local
-frontend/.env.development.local
-frontend/.env.test.local
-frontend/.env.production.local
+frontend/dist/
+frontend/.vercel/
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+
+# Logs de Node
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+
+# Variables de entorno (Frontend)
+# Ignoramos todos los archivos .env para evitar subir credenciales
+frontend/.env*
+!frontend/.env.example
 
 # --- .NET (Backend) ---
-# Build results
+# Carpetas de compilación
 backend/**/bin/
 backend/**/obj/
 backend/**/publish/
 
 # Visual Studio / VS Code
-[Bb]ackend/.vs/
 .vs/
 **/.vs/
-**/.vs/**
 *.vsidx
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
+**/.vscode/
 
 # User-specific files (Secrets & Settings)
+# Ignoramos settings locales que pueden variar entre desarrolladores
 backend/**/appsettings.Development.json
 backend/**/appsettings.Local.json
 
@@ -45,7 +54,9 @@ backend/**/appsettings.Local.json
 *.db
 *.db-shm
 *.db-wal
+backend/**/Migrations/*.designer.cs
 
-# --- General Tooling ---
+# --- General Tooling & Caches ---
 .editorconfig
 .cache/
+.idea/
