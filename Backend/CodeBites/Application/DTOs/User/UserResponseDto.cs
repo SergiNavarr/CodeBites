@@ -14,5 +14,7 @@ namespace Application.DTOs.User
         public int TotalPoints { get; set; }
         public int CurrentStreak { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        public int ActiveCategoriesCount { get; set; }
     }
 }

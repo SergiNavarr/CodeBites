@@ -11,7 +11,6 @@ namespace Domain.Entities
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public virtual string IconUrl { get; set; } = string.Empty;
 
         public string Icon { get; set; } = "code";
         public string Color { get; set; } = "#3b82f6";

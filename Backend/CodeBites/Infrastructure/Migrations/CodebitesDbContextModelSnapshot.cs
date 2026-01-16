@@ -71,6 +71,11 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -79,10 +84,10 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<string>("IconUrl")
+                    b.Property<string>("Icon")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -125,6 +130,9 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
 
                     b.Property<int>("PointsReward")
                         .ValueGeneratedOnAdd()
@@ -261,14 +269,14 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c2d6f83a-1234-5678-90ab-cdef12345678"),
-                            CreatedAt = new DateTime(2026, 1, 13, 15, 19, 16, 147, DateTimeKind.Utc).AddTicks(888),
+                            CreatedAt = new DateTime(2026, 1, 16, 15, 21, 58, 666, DateTimeKind.Utc).AddTicks(1868),
                             IsActive = true,
                             Name = "Admin"
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"),
-                            CreatedAt = new DateTime(2026, 1, 13, 15, 19, 16, 147, DateTimeKind.Utc).AddTicks(891),
+                            CreatedAt = new DateTime(2026, 1, 16, 15, 21, 58, 666, DateTimeKind.Utc).AddTicks(1872),
                             IsActive = true,
                             Name = "User"
                         });
@@ -354,6 +362,39 @@ namespace Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("UserAchievements", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.UserCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("EnrolledAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId", "CategoryId")
+                        .IsUnique();
+
+                    b.ToTable("UserCategories", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.UserProgress", b =>
@@ -467,6 +508,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.UserCategory", b =>
+                {
+                    b.HasOne("Domain.Entities.Category", "Category")
+                        .WithMany("UserCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("UserCategories")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.UserProgress", b =>
                 {
                     b.HasOne("Domain.Entities.Lesson", "Lesson")
@@ -494,6 +554,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
                     b.Navigation("Lessons");
+
+                    b.Navigation("UserCategories");
                 });
 
             modelBuilder.Entity("Domain.Entities.Lesson", b =>
@@ -523,6 +585,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("Achievements");
 
                     b.Navigation("Progress");
+
+                    b.Navigation("UserCategories");
                 });
 #pragma warning restore 612, 618
         }

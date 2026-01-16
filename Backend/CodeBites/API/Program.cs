@@ -30,15 +30,19 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddMaps(typeof(MappingProfile).Assembly);
 });
 
-// Registro de servicios y repositorios
+// Registro de repositorios
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
+// Registro de servicios
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ILessonService, LessonService>();
 
 
 builder.Services.AddCors(options =>
@@ -76,6 +80,13 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<CodebitesDbContext>();
+    await DataSeeder.SeedData(context); 
+}
 
 // Configuración del Pipeline de HTTP (Middleware)
 if (app.Environment.IsDevelopment())

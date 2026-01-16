@@ -7,6 +7,7 @@ export interface UserResponse {
   email: string;
   totalPoints: number;
   currentStreak: number;
+  activeCategoriesCount: number;
 }
 
 /**
@@ -46,7 +47,20 @@ export interface Category {
   lessonsCount: number;
   completedLessons: number;
   isFollowing: boolean;
-  progressPercentage: number;
+}
+
+// Interfaz para cuando entras a ver las lecciones de una categoría
+export interface CategoryDetail extends Category {
+  lessons: LessonSummary[];
+}
+
+// Resumen de lección dentro de una categoría
+export interface LessonSummary {
+  id: string;
+  title: string;
+  points: number;
+  order: number;
+  isCompleted: boolean;
 }
 
 /**
@@ -56,7 +70,9 @@ export interface Lesson {
   id: string;
   title: string;
   content: string;
+  codeExample?: string;
+  points: number;
   order: number;
-  categoryId: string;
   isCompleted: boolean;
+  nextLessonId?: string | null;
 }

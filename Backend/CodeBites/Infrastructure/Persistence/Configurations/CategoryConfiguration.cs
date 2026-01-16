@@ -28,9 +28,6 @@ namespace Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(500);
 
-            builder.Property(c => c.IconUrl)
-                .HasMaxLength(255);
-
             builder.Property(c => c.Icon).HasMaxLength(50);
 
             builder.Property(c => c.Color).HasMaxLength(7);

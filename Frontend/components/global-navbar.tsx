@@ -67,7 +67,10 @@ export function GlobalNavbar() {
         {/* Gamification Stats & User Menu */}
         <div className="flex items-center gap-4">
           {/* Points */}
-          <div className="flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1.5 transition-colors hover:bg-amber-500/20">
+          <div
+            key={user.totalPoints}
+            className="flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1.5 transition-all animate-in zoom-in duration-500"
+          >
             <Trophy className="h-4 w-4 text-amber-400" />
             <span className="text-sm font-semibold text-amber-400">
               {user.totalPoints.toLocaleString()}
@@ -103,9 +106,9 @@ export function GlobalNavbar() {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link 
-                  href="/login" 
-                  onClick={() => localStorage.removeItem('auth_token')} 
+                <Link
+                  href="/login"
+                  onClick={() => localStorage.removeItem('auth_token')}
                   className="flex items-center text-destructive"
                 >
                   <LogOut className="mr-2 h-4 w-4" />

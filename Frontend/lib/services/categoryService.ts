@@ -1,5 +1,5 @@
 import { apiClient } from "../api-client";
-import { Category } from "../types";
+import { Category, CategoryDetail } from "../types";
 
 export const CategoryService = {
   /**
@@ -24,5 +24,9 @@ export const CategoryService = {
    */
   unfollow: async (id: string): Promise<void> => {
     await apiClient.post(`/Categories/${id}/unfollow`);
-  }
+  },
+
+  getByIdWithDetails: async (id: string): Promise<CategoryDetail> => {
+  return await apiClient.get<CategoryDetail>(`/Categories/${id}`);
+}
 };

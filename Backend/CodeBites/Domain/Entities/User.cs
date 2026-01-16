@@ -21,5 +21,7 @@ namespace Domain.Entities
 
         public virtual ICollection<UserProgress> Progress {get; set; } = new List<UserProgress>();
         public virtual ICollection<UserAchievement> Achievements { get; set; } = new List<UserAchievement>();
+
+        public virtual ICollection<UserCategory> UserCategories { get; set; } = new List<UserCategory>();
     }
 }

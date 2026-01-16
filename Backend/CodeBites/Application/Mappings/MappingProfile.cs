@@ -16,19 +16,22 @@ namespace Application.Mappings
         public MappingProfile()
         {
             // User Mappings
-            CreateMap<User, UserResponseDto>();
+            CreateMap<User, UserResponseDto>()
+                .ForMember(dest => dest.ActiveCategoriesCount,
+                    opt => opt.MapFrom(src => src.UserCategories.Count));
             CreateMap<User, UserRegisterDto>().ReverseMap();
             CreateMap<UserLoginDto, User>();
             CreateMap<User, UserLoginResponseDto>();
 
             // Category Mappings
             CreateMap<Category, CategoryResponseDto>()
-            .ForMember(dest => dest.LessonsCount, opt => opt.MapFrom(src => src.Lessons.Count));
-
+                .ForMember(dest => dest.LessonsCount, opt => opt.MapFrom(src => src.Lessons.Count));
+            
             CreateMap<Category, CategoryDetailDto>();
 
             // Lesson Mappings
             CreateMap<Lesson, LessonResponseDto>();
+            CreateMap<Lesson, LessonDetailDto>();
         }
     }
 }
