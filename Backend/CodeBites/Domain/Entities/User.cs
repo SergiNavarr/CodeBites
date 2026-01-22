@@ -15,6 +15,7 @@ namespace Domain.Entities
 
         public int TotalPoints { get; set; } = 0;
         public int CurrentStreak { get; set; } = 0;
+        public DateTime? LastActivityAt { get; set; }
 
         public Guid RoleId { get; set; }
         public virtual Role Role { get; set; } = null!;

@@ -10,6 +10,8 @@ import { Search, BookOpen, Compass, Loader2 } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 import { CategoryService } from "@/lib/services/categoryService"
 import type { Category } from "@/lib/types"
+import { toast } from "sonner"
+import { Button } from "../ui/button"
 
 export function DashboardContent() {
   const { user, loading: authLoading } = useAuth()
@@ -34,9 +36,9 @@ export function DashboardContent() {
   }, [user])
 
   // Lógica de filtrado
-  const followedCategories = useMemo(() => 
-    categories.filter((cat) => cat.isFollowing), 
-  [categories])
+  const followedCategories = useMemo(() =>
+    categories.filter((cat) => cat.isFollowing),
+    [categories])
 
   const exploreCategories = useMemo(() =>
     categories
@@ -52,12 +54,16 @@ export function DashboardContent() {
   const handleFollow = async (categoryId: string) => {
     try {
       await CategoryService.follow(categoryId)
-      
-      // Actualización optimista de la UI
-      setCategories((prev) => 
+
+      // Actualización optimista
+      setCategories((prev) =>
         prev.map((cat) => (cat.id === categoryId ? { ...cat, isFollowing: true } : cat))
       )
+
+      toast.success("Ruta añadida a tu camino de aprendizaje")
+
     } catch (error) {
+      toast.error("No se pudo seguir la categoría")
       console.error("Action failed:", error)
     }
   }
@@ -138,6 +144,22 @@ export function DashboardContent() {
               {exploreCategories.map((category) => (
                 <ExploreCard key={category.id} category={category} onFollow={handleFollow} />
               ))}
+            </div>
+          )}
+          {exploreCategories.length === 0 && !isLoadingCategories && (
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center">
+              <div className="mb-4 rounded-full bg-muted p-3">
+                <Search className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-medium">No categories found</h3>
+              <p className="text-sm text-muted-foreground">
+                Try searching for something else like "React" or "C#".
+              </p>
+              {searchQuery && (
+                <Button variant="link" onClick={() => setSearchQuery("")} className="mt-2">
+                  Clear search
+                </Button>
+              )}
             </div>
           )}
         </section>

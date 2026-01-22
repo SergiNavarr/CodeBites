@@ -20,7 +20,12 @@ builder.Services.AddDbContext<CodebitesDbContext>(options =>
         b => b.MigrationsAssembly("Infrastructure")));
 
 // Servicios básicos de la API
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -43,6 +48,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ILessonService, LessonService>();
+builder.Services.AddScoped<IQuizService, QuizService>();
 
 
 builder.Services.AddCors(options =>

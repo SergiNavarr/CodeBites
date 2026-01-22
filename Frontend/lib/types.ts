@@ -76,3 +76,45 @@ export interface Lesson {
   isCompleted: boolean;
   nextLessonId?: string | null;
 }
+
+/**
+ * Representa el detalle de un Quiz para ser realizado.
+ */
+export interface QuizDetail {
+  id: string;
+  title: string;
+  questions: Question[];
+}
+
+export interface Question {
+  id: string;
+  text: string;
+  options: Option[];
+}
+
+export interface Option {
+  id: string;
+  text: string;
+}
+
+/**
+ * Estructura para enviar las respuestas al servidor.
+ */
+export interface QuizSubmission {
+  quizId: string;
+  answers: {
+    questionId: string;
+    selectedOptionId: string;
+  }[];
+}
+
+/**
+ * Respuesta del servidor tras validar un quiz.
+ */
+export interface QuizResult {
+  success: boolean;
+  pointsEarned: number;
+  correctAnswersCount: number;
+  totalQuestions: number;
+  message: string;
+}

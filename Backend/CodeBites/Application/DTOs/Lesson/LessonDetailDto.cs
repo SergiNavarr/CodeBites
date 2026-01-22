@@ -16,5 +16,6 @@ namespace Application.DTOs.Lesson
         public int Order { get; set; }
         public bool IsCompleted { get; set; }
         public Guid? NextLessonId { get; set; }
+        public Guid? QuizId { get; set; }
     }
 }

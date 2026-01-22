@@ -77,6 +77,30 @@ namespace Application.Services
             if (user != null)
             {
                 user.TotalPoints += lesson.PointsReward;
+
+                var today = DateTime.UtcNow.Date;
+                var lastActivityDate = user.LastActivityAt?.Date;
+
+                if (lastActivityDate == null)
+                {
+                    user.CurrentStreak = 1;
+                }
+                else if (lastActivityDate == today)
+                {
+                    // Ya hizo una lección hoy. 
+                    // No aumentamos la racha, pero mantenemos el valor actual.
+                }
+                else if (lastActivityDate == today.AddDays(-1))
+                {
+                    user.CurrentStreak++;
+                }
+                else
+                {
+                    user.CurrentStreak = 1;
+                }
+
+                user.LastActivityAt = DateTime.UtcNow;
+
                 _userRepo.Update(user);
             }
 

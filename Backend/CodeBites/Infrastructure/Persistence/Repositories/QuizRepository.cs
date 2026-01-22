@@ -14,12 +14,12 @@ namespace Infrastructure.Persistence.Repositories
     {
         public QuizRepository(CodebitesDbContext context) : base(context) { }
 
-        public async Task<Quiz?> GetQuizWithQuestionsAsync(Guid quizId)
+        public async Task<Quiz?> GetQuizWithQuestionsAsync(Guid lessonId)
         {
             return await _context.Quizzes
                 .Include(q => q.Questions)
                     .ThenInclude(ques => ques.Options)
-                .FirstOrDefaultAsync(q => q.Id == quizId);
+                .FirstOrDefaultAsync(q => q.LessonId == lessonId);
         }
     }
 }

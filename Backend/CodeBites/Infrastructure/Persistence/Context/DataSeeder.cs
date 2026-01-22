@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Context
@@ -12,56 +11,168 @@ namespace Infrastructure.Persistence.Context
     {
         public static async Task SeedData(CodebitesDbContext context)
         {
-            // Nos aseguramos de que las categorías existan
-            if (!await context.Categories.AnyAsync())
-            {
-                var categories = new List<Category>
-            {
-                new Category
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "C# Fundamentals",
-                    Description = "Aprende las bases del lenguaje de Microsoft, desde variables hasta POO.",
-                    Icon = "terminal", 
-                    Color = "#68217A",
-                    Lessons = new List<Lesson>
-                    {
-                        new Lesson { Id = Guid.NewGuid(), Title = "Hola Mundo y Sintaxis", Order = 1, Content = "Contenido de la lección 1..." },
-                        new Lesson { Id = Guid.NewGuid(), Title = "Variables y Tipos", Order = 2, Content = "Contenido de la lección 2..." },
-                        new Lesson { Id = Guid.NewGuid(), Title = "Estructuras de Control", Order = 3, Content = "Contenido de la lección 3..." }
-                    }
-                },
-                new Category
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "SQL Essentials",
-                    Description = "Domina las consultas relacionales y el diseño de bases de datos.",
-                    Icon = "database",
-                    Color = "#F29111",
-                    Lessons = new List<Lesson>
-                    {
-                        new Lesson { Id = Guid.NewGuid(), Title = "SELECT y Filtros", Order = 1, Content = "Contenido de SQL 1..." },
-                        new Lesson { Id = Guid.NewGuid(), Title = "Joins y Relaciones", Order = 2, Content = "Contenido de SQL 2..." }
-                    }
-                },
-                new Category
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "React UI",
-                    Description = "Crea interfaces modernas y dinámicas con hooks y componentes.",
-                    Icon = "layout",
-                    Color = "#00D8FF",
-                    Lessons = new List<Lesson>
-                    {
-                        new Lesson { Id = Guid.NewGuid(), Title = "JSX y Componentes", Order = 1, Content = "Contenido de React 1..." },
-                        new Lesson { Id = Guid.NewGuid(), Title = "useState y useEffect", Order = 2, Content = "Contenido de React 2..." }
-                    }
-                }
-            };
+            if (await context.Categories.AnyAsync()) return;
 
-                await context.Categories.AddRangeAsync(categories);
-                await context.SaveChangesAsync();
+            var categoriesData = GetFullContentMap();
+            var categoriesToSeed = new List<Category>();
+            var quizzesToSeed = new List<Quiz>();
+
+            foreach (var catData in categoriesData)
+            {
+                var categoryId = Guid.NewGuid();
+                var lessons = new List<Lesson>();
+
+                for (int i = 0; i < catData.Lessons.Count; i++)
+                {
+                    var lessonData = catData.Lessons[i];
+                    var lessonId = Guid.NewGuid(); // Este será el PK de la lección y del Quiz
+
+                    var lesson = new Lesson
+                    {
+                        Id = lessonId,
+                        Title = lessonData.Title,
+                        Content = lessonData.Content,
+                        Order = i + 1,
+                        PointsReward = 100,
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true
+                    };
+                    lessons.Add(lesson);
+
+                    // Generamos el Quiz coherente para esta lección
+                    var quiz = new Quiz
+                    {
+                        LessonId = lessonId, // PK Compartida
+                        Title = $"Evaluación: {lessonData.Title}",
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true,
+                        Questions = lessonData.Questions.Select(q => new Question
+                        {
+                            Id = Guid.NewGuid(),
+                            Text = q.Text,
+                            QuizId = lessonId,
+                            Options = q.Options.Select(o => new Option
+                            {
+                                Id = Guid.NewGuid(),
+                                Text = o.Text,
+                                IsCorrect = o.IsCorrect
+                            }).ToList()
+                        }).ToList()
+                    };
+                    quizzesToSeed.Add(quiz);
+                }
+
+                categoriesToSeed.Add(new Category
+                {
+                    Id = categoryId,
+                    Name = catData.Name,
+                    Description = catData.Description,
+                    Icon = catData.Icon,
+                    Color = catData.Color,
+                    Lessons = lessons,
+                    CreatedAt = DateTime.UtcNow,
+                    IsActive = true
+                });
             }
+
+            await context.Categories.AddRangeAsync(categoriesToSeed);
+            await context.Quizzes.AddRangeAsync(quizzesToSeed);
+            await context.SaveChangesAsync();
+        }
+
+        private static List<CategorySeedMap> GetFullContentMap()
+        {
+            return new List<CategorySeedMap>
+            {
+                new CategorySeedMap("C# Mastery", "De cero a experto en el lenguaje de .NET", "terminal", "#68217A", new List<LessonSeedMap> {
+                    GenerateLesson("Sintaxis Básica", "C# es un lenguaje de tipado fuerte...", "Punto de entrada", "Main", "Estructura de control", "If/Else"),
+                    GenerateLesson("Tipos de Datos", "Existen tipos por valor y por referencia...", "Tipo entero", "int", "Tipo decimal", "decimal"),
+                    GenerateLesson("POO: Clases", "Las clases son plantillas para objetos...", "Instancia", "new", "Miembro", "Property"),
+                    GenerateLesson("Interfaces", "Definen un contrato que las clases deben seguir...", "Palabra clave", "interface", "Implementación", "implements"),
+                    GenerateLesson("Manejo de Excepciones", "Uso de try-catch para errores...", "Bloque final", "finally", "Lanzar error", "throw"),
+                    GenerateLesson("LINQ", "Consultas potentes sobre colecciones...", "Filtrar", "Where", "Proyectar", "Select"),
+                    GenerateLesson("Async/Await", "Programación no bloqueante...", "Retorno asíncrono", "Task", "Esperar", "await"),
+                    GenerateLesson("Generics", "Reutilización de código con tipos...", "Símbolo", "<T>", "Restricción", "where")
+                }),
+                new CategorySeedMap("SQL & Databases", "Domina el lenguaje de los datos", "database", "#F29111", new List<LessonSeedMap> {
+                    GenerateLesson("Intro a SQL", "SQL es el estándar para RDBMS...", "Lenguaje", "Declarativo", "Comando", "SELECT"),
+                    GenerateLesson("Filtrado", "Uso de WHERE y operadores...", "Filtro", "WHERE", "Comparación", "LIKE"),
+                    GenerateLesson("Inner Joins", "Combinar tablas con claves foráneas...", "Unión", "JOIN", "Condición", "ON"),
+                    GenerateLesson("Funciones Agregadas", "COUNT, SUM y AVG...", "Contar", "COUNT", "Agrupar", "GROUP BY"),
+                    GenerateLesson("Subconsultas", "Consultas dentro de otras consultas...", "Anidamiento", "Subquery", "Inclusión", "IN"),
+                    GenerateLesson("Diseño: PK y FK", "Integridad referencial...", "Clave primaria", "PK", "Clave foránea", "FK"),
+                    GenerateLesson("Índices", "Optimización de velocidad de búsqueda...", "Estructura", "B-Tree", "Único", "UNIQUE"),
+                    GenerateLesson("Transacciones", "ACID: Atomicidad y Consistencia...", "Confirmar", "COMMIT", "Revertir", "ROLLBACK")
+                }),
+                new CategorySeedMap("React UI", "Interfaces modernas y reactivas", "layout", "#00D8FF", new List<LessonSeedMap> {
+                    GenerateLesson("JSX Fundamentals", "JSX permite escribir HTML en JS...", "Extensión", "js/tsx", "Retorno", "Component"),
+                    GenerateLesson("State: useState", "El estado maneja la memoria del componente...", "Hook", "useState", "Actualización", "setter"),
+                    GenerateLesson("Effects: useEffect", "Sincronización con sistemas externos...", "Efecto", "useEffect", "Dependencias", "Array"),
+                    GenerateLesson("Props & Data Flow", "Paso de datos de padres a hijos...", "Propiedad", "props", "Dirección", "Unidireccional"),
+                    GenerateLesson("Listas y Keys", "Renderizado dinámico de arreglos...", "Identificador", "key", "Mapeo", "map()"),
+                    GenerateLesson("Context API", "Gestión de estado global nativa...", "Productor", "Provider", "Consumidor", "useContext"),
+                    GenerateLesson("React Router", "Navegación entre páginas...", "Enlace", "Link", "Ruta", "Route"),
+                    GenerateLesson("Custom Hooks", "Extraer lógica para reutilizarla...", "Prefijo", "use", "Lógica", "Shared")
+                }),
+                new CategorySeedMap("ASP.NET Web API", "Construcción de servicios RESTful", "globe", "#512BD4", new List<LessonSeedMap> {
+                    GenerateLesson("Arquitectura REST", "Principios de los servicios web...", "Estado", "Stateless", "Método", "GET/POST"),
+                    GenerateLesson("Controllers", "Punto de entrada de las peticiones...", "Atributo", "ApiController", "Ruta", "Route"),
+                    GenerateLesson("Inyección de Dependencias", "Desacoplamiento de componentes...", "Contenedor", "ServiceCollection", "Ciclo", "Scoped"),
+                    GenerateLesson("Entity Framework Core", "El ORM oficial de Microsoft...", "Contexto", "DbContext", "Traducción", "SQL"),
+                    GenerateLesson("DTOs", "Transferencia de datos segura...", "Mapeo", "AutoMapper", "Capa", "Application"),
+                    GenerateLesson("Middleware", "Pipeline de procesamiento de requests...", "Orden", "Pipeline", "Registro", "App.Use"),
+                    GenerateLesson("Seguridad JWT", "Autenticación basada en tokens...", "Header", "Authorization", "Firma", "Secret Key"),
+                    GenerateLesson("Validación y Errores", "Manejo global de respuestas...", "Validación", "FluentValidation", "Código", "400/500")
+                })
+            };
+        }
+
+        // --- CLASES AUXILIARES PARA EL MAPEADO DEL SEED ---
+        private class CategorySeedMap
+        {
+            public string Name, Description, Icon, Color;
+            public List<LessonSeedMap> Lessons;
+            public CategorySeedMap(string n, string d, string i, string c, List<LessonSeedMap> l)
+            {
+                Name = n; Description = d; Icon = i; Color = c; Lessons = l;
+            }
+        }
+
+        private class LessonSeedMap
+        {
+            public string Title, Content;
+            public List<QuestionSeedMap> Questions;
+        }
+
+        private class QuestionSeedMap
+        {
+            public string Text;
+            public List<OptionSeedMap> Options;
+        }
+
+        private class OptionSeedMap
+        {
+            public string Text; public bool IsCorrect;
+        }
+
+        private static LessonSeedMap GenerateLesson(string title, string content, string q1T, string q1A, string q2T, string q2A)
+        {
+            var lesson = new LessonSeedMap { Title = title, Content = content, Questions = new List<QuestionSeedMap>() };
+
+            for (int i = 1; i <= 10; i++)
+            {
+                var isEven = i % 2 == 0;
+                lesson.Questions.Add(new QuestionSeedMap
+                {
+                    Text = $"Pregunta {i}: Sobre {(isEven ? q1T : q2T)} en {title}?",
+                    Options = new List<OptionSeedMap> {
+                        new OptionSeedMap { Text = (isEven ? q1A : q2A), IsCorrect = true },
+                        new OptionSeedMap { Text = "Opción incorrecta A", IsCorrect = false },
+                        new OptionSeedMap { Text = "Opción incorrecta B", IsCorrect = false }
+                    }
+                });
+            }
+            return lesson;
         }
     }
 }

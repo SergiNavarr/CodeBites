@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Category;
 using Application.DTOs.Lesson;
+using Application.DTOs.Quiz;
 using Application.DTOs.User;
 using AutoMapper;
 using Domain.Entities;
@@ -32,6 +33,11 @@ namespace Application.Mappings
             // Lesson Mappings
             CreateMap<Lesson, LessonResponseDto>();
             CreateMap<Lesson, LessonDetailDto>();
+
+            // Quiz Mappings
+            CreateMap<Quiz, QuizDetailDto>();
+            CreateMap<Question, QuestionDto>();
+            CreateMap<Option, OptionDto>();
         }
     }
 }
