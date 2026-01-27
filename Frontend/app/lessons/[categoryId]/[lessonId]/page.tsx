@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation"
 import { GlobalNavbar } from "@/components/global-navbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Trophy, Loader2, BookOpen } from "lucide-react"
+import { ArrowLeft, Trophy, Loader2 } from "lucide-react"
 import { LessonService } from "@/lib/services/lessonService"
 import { QuizService } from "@/lib/services/quizService"
 import { QuizComponent } from "@/components/lessons/quiz-component"
@@ -31,23 +31,27 @@ export default function LessonPage() {
   const lessonId = params.lessonId as string
 
   useEffect(() => {
-  async function loadData() {
-    try {
-      setLoading(true);
-      const lessonData = await LessonService.getById(lessonId);
-      setLesson(lessonData);
+    async function loadData() {
+      if (!lessonId) return
+      try {
+        setLoading(true)
+        const lessonData = await LessonService.getById(lessonId)
+        setLesson(lessonData)
 
-      const quizData = await QuizService.getByLesson(lessonId);
-      setQuiz(quizData);
-    } catch (err) {
-      toast.error("Error al cargar la lección o el quiz.");
-      setQuiz(null);
-    } finally {
-      setLoading(false);
+        try {
+          const quizData = await QuizService.getByLesson(lessonId)
+          setQuiz(quizData)
+        } catch (e) {
+          setQuiz(null)
+        }
+      } catch (err) {
+        toast.error("Error al cargar la lección.")
+      } finally {
+        setLoading(false)
+      }
     }
-  }
-  loadData();
-}, [lessonId]);
+    loadData()
+  }, [lessonId])
 
   async function handleSimpleComplete() {
     try {
@@ -57,7 +61,7 @@ export default function LessonPage() {
       setPointsEarned(result.points)
       setIsCompleted(true)
     } catch (err) {
-      toast.error("No se pudo marcar la lección como completada.")
+      toast.error("No se pudo completar la lección.")
     } finally {
       setIsCompleting(false)
     }
@@ -96,7 +100,7 @@ export default function LessonPage() {
         <GlobalNavbar />
         <main className="container mx-auto flex flex-col items-center justify-center px-4 py-20 text-center">
           <Trophy className="h-16 w-16 text-primary mb-6 animate-bounce" />
-          <h1 className="text-5xl font-black mb-4 uppercase tracking-tighter">¡Bite Completado!</h1>
+          <h1 className="text-5xl font-black mb-4 uppercase tracking-tighter italic">¡Bite Completado!</h1>
           <p className="text-6xl font-black text-primary mb-12">+{pointsEarned} XP</p>
           <div className="flex gap-4">
             <Button size="lg" asChild><Link href={`/lessons/${categoryId}`}>Continuar</Link></Button>
@@ -119,34 +123,38 @@ export default function LessonPage() {
         <div className="mx-auto max-w-3xl">
           {!showQuiz ? (
             <>
-              <Card className="mb-8 border-border/50 bg-card/50 shadow-2xl">
+              <Card className="mb-8 border-border/50 bg-card/50 shadow-2xl overflow-hidden">
                 <CardHeader className="border-b border-border/10 bg-muted/20 pb-8">
                   <div className="flex items-center justify-between mb-4">
-                    {/* 🛠️ FIX: Usamos pointsReward que es el nombre real en el DTO */}
                     <span className="rounded-full bg-primary/10 px-4 py-1.5 text-xs font-black text-primary uppercase border border-primary/20">
                       {lesson?.points} XP 
                     </span>
-                    <span className="text-xs font-bold text-muted-foreground uppercase">Teoría</span>
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Teoría</span>
                   </div>
-                  <CardTitle className="text-4xl font-black tracking-tighter">{lesson?.title}</CardTitle>
+                  <CardTitle className="text-4xl font-black tracking-tighter italic leading-none">
+                    {lesson?.title}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-10">
-                  <div className="space-y-6 text-xl leading-relaxed font-medium">
+                  <div className="space-y-6 text-xl leading-relaxed font-medium text-foreground/90">
                     {lesson?.content?.split("\n\n").map((p, i) => <p key={i}>{p}</p>)}
                   </div>
                 </CardContent>
               </Card>
 
               <div className="flex justify-end pb-20">
-                {/* 🛠️ FIX: Lógica condicional del botón */}
-                {lesson?.id ? (
-                  <Button size="lg" className="h-16 px-12 text-xl font-black uppercase" onClick={() => setShowQuiz(true)}>
+                {quiz ? (
+                  <Button 
+                    size="lg" 
+                    className="h-16 px-12 text-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20" 
+                    onClick={() => setShowQuiz(true)}
+                  >
                     Continuar al Quiz
                   </Button>
                 ) : (
                   <Button 
                     size="lg" 
-                    className="h-16 px-12 text-xl font-black uppercase" 
+                    className="h-16 px-12 text-xl font-black uppercase tracking-widest" 
                     onClick={handleSimpleComplete}
                     disabled={isCompleting}
                   >
@@ -156,15 +164,7 @@ export default function LessonPage() {
               </div>
             </>
           ) : (
-            // 🛠️ FIX: Aseguramos que el componente del quiz solo se cargue si hay datos
-            quiz ? (
-                <QuizComponent quiz={quiz} onComplete={handleQuizSubmit} isSubmitting={isCompleting} />
-            ) : (
-                <div className="text-center py-20">
-                    <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-                    <p>Cargando preguntas...</p>
-                </div>
-            )
+            quiz && <QuizComponent quiz={quiz} onComplete={handleQuizSubmit} isSubmitting={isCompleting} />
           )}
         </div>
       </main>

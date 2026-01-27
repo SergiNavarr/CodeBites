@@ -3,7 +3,8 @@ import {
   UserResponse, 
   AuthResponse, 
   LoginCredentials, 
-  RegisterCredentials 
+  RegisterCredentials,
+  UserProfile
 } from "../types";
 
 export const UserService = {
@@ -52,5 +53,13 @@ export const UserService = {
    */
   logout: () => {
     apiClient.removeToken();
-  }
+  },
+
+  /**
+   * Obtiene el perfil completo enriquecido con logros y actividad.
+   * Espejo de: GET /api/users/profile
+   */
+  getProfile: async (): Promise<UserProfile> => {
+    return await apiClient.get<UserProfile>("/users/profile");
+  },
 };

@@ -118,3 +118,28 @@ export interface QuizResult {
   totalQuestions: number;
   message: string;
 }
+
+export interface UserAchievement {
+  name: string;
+  description: string;
+  iconUrl: string;
+  unlockedAt: string;
+}
+
+export interface RecentActivity {
+  title: string;
+  date: string;
+  pointsGained: number;
+}
+
+export interface UserProfile {
+  username: string;
+  email: string;
+  createdAt: string;
+  totalPoints: number;
+  currentStreak: number;
+  activeCategoriesCount: number;
+  completedLessonsCount: number;
+  achievements: UserAchievement[];
+  recentActivities: RecentActivity[];
+}

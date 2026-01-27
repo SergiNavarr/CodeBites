@@ -23,6 +23,14 @@ namespace Application.Mappings
             CreateMap<User, UserRegisterDto>().ReverseMap();
             CreateMap<UserLoginDto, User>();
             CreateMap<User, UserLoginResponseDto>();
+            CreateMap<UserAchievement, UserAchievementDto>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Achievement.Name))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Achievement.Description))
+                .ForMember(dest => dest.IconUrl, opt => opt.MapFrom(src => src.Achievement.IconUrl));
+            CreateMap<User, UserProfileDto>()
+                .ForMember(dest => dest.ActiveCategoriesCount, opt => opt.MapFrom(src => src.UserCategories.Count))
+                .ForMember(dest => dest.CompletedLessonsCount, opt => opt.MapFrom(src => src.Progress.Count))
+                .ForMember(dest => dest.Achievements, opt => opt.MapFrom(src => src.Achievements));
 
             // Category Mappings
             CreateMap<Category, CategoryResponseDto>()
@@ -35,7 +43,8 @@ namespace Application.Mappings
             CreateMap<Lesson, LessonDetailDto>();
 
             // Quiz Mappings
-            CreateMap<Quiz, QuizDetailDto>();
+            CreateMap<Quiz, QuizDetailDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.LessonId));
             CreateMap<Question, QuestionDto>();
             CreateMap<Option, OptionDto>();
         }

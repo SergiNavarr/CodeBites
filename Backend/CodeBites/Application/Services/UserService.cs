@@ -85,5 +85,25 @@ namespace Application.Services
             if (user == null) throw new Exception("Usuario no encontrado.");
             return _mapper.Map<UserResponseDto>(user);
         }
+
+        public async Task<UserProfileDto> GetUserProfileAsync(Guid userId)
+        {
+            var user = await _userRepository.GetUserWithDetailsAsync(userId);
+            if (user == null) throw new Exception("Usuario no encontrado");
+
+            var profile = _mapper.Map<UserProfileDto>(user);
+
+            profile.RecentActivities = user.Progress
+                .OrderByDescending(p => p.CompletedAt)
+                .Take(5)
+                .Select(p => new RecentActivityDto
+                {
+                    Title = $"Completó: {p.Lesson.Title}",
+                    Date = p.CompletedAt,
+                    PointsGained = p.Lesson.PointsReward
+                }).ToList();
+
+            return profile;
+        }
     }
 }

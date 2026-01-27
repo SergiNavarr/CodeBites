@@ -21,5 +21,18 @@ namespace Infrastructure.Persistence.Repositories
             return await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
+        public async Task<User?> GetUserWithDetailsAsync(Guid userId)
+        {
+            return await _context.Users
+                .Include(u => u.UserCategories)
+
+                .Include(u => u.Progress)
+                    .ThenInclude(p => p.Lesson)
+
+                .Include(u => u.Achievements)
+                    .ThenInclude(ua => ua.Achievement)
+
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
     }
 }

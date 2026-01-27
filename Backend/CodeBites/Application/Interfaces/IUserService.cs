@@ -13,5 +13,6 @@ namespace Application.Interfaces
         Task<UserResponseDto> RegisterAsync(UserRegisterDto userRegisterDto);
         Task<UserLoginResponseDto> LoginAsync(UserLoginDto userLoginDto);
         Task<UserResponseDto> GetByIdAsync(Guid userId);
+        Task<UserProfileDto> GetUserProfileAsync(Guid userId);
     }
 }
