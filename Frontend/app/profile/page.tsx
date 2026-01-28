@@ -5,7 +5,7 @@ import { GlobalNavbar } from "@/components/global-navbar"
 import { ProgressCard } from "@/components/dashboard/progress-card"
 import { UserService } from "@/lib/services/userService"
 import { UserProfile } from "@/lib/types"
-import { Trophy, Zap, Target, Calendar, Loader2, Award, History } from "lucide-react"
+import { Trophy, Zap, Target, Calendar, Loader2, Award, History, Flame, Crown } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { toast } from "sonner"
@@ -13,6 +13,16 @@ import { toast } from "sonner"
 export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const getIcon = (iconName: string) => {
+    switch (iconName.toLowerCase()) {
+      case "zap": return <Zap className="h-8 w-8 text-yellow-600" />;
+      case "flame": return <Flame className="h-8 w-8 text-orange-500" />;
+      case "crown": return <Crown className="h-8 w-8 text-yellow-500" />;
+      case "trophy": 
+      default: return <Trophy className="h-8 w-8 text-yellow-600" />;
+    }
+  }
 
   useEffect(() => {
     async function loadProfile() {
@@ -143,7 +153,7 @@ export default function ProfilePage() {
                     <Card key={i} className="border-border/50 bg-gradient-to-br from-card to-muted/20 hover:scale-105 transition-transform cursor-default">
                       <CardContent className="flex flex-col items-center justify-center p-6 text-center h-full">
                         <div className="h-16 w-16 mb-4 rounded-full bg-yellow-500/10 flex items-center justify-center">
-                          <Trophy className="h-8 w-8 text-yellow-600" />
+                          {getIcon(achievement.iconUrl)}
                         </div>
                         <h4 className="font-bold text-sm mb-1">{achievement.name}</h4>
                         <p className="text-xs text-muted-foreground line-clamp-2">{achievement.description}</p>

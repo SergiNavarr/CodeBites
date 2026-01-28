@@ -1,12 +1,10 @@
-﻿using Application.DTOs.Lesson;
-using Application.Interfaces;
+﻿using Application.Interfaces;
+using Application.DTOs.Lesson;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -17,17 +15,20 @@ namespace Application.Services
         private readonly IGenericRepository<UserProgress> _progressRepo;
         private readonly IGenericRepository<User> _userRepo;
         private readonly IMapper _mapper;
+        private readonly IAchievementService _achievementService;
 
         public LessonService(
             ILessonRepository lessonRepo,
             IGenericRepository<UserProgress> progressRepo,
             IGenericRepository<User> userRepo,
-            IMapper mapper)
+            IMapper mapper,
+            IAchievementService achievementService)
         {
             _lessonRepo = lessonRepo;
             _progressRepo = progressRepo;
             _userRepo = userRepo;
             _mapper = mapper;
+            _achievementService = achievementService;
         }
 
         public async Task<LessonDetailDto?> GetLessonDetailAsync(Guid lessonId, Guid userId)
@@ -87,24 +88,26 @@ namespace Application.Services
                 }
                 else if (lastActivityDate == today)
                 {
-                    // Ya hizo una lección hoy. 
-                    // No aumentamos la racha, pero mantenemos el valor actual.
+                    // Ya hizo actividad hoy, mantenemos la racha
                 }
                 else if (lastActivityDate == today.AddDays(-1))
                 {
+                    // Hizo actividad ayer, sumamos racha
                     user.CurrentStreak++;
                 }
                 else
                 {
+                    // Rompió la racha
                     user.CurrentStreak = 1;
                 }
 
                 user.LastActivityAt = DateTime.UtcNow;
-
                 _userRepo.Update(user);
             }
 
             await _userRepo.SaveChangesAsync();
+
+            await _achievementService.CheckAndUnlockAchievementsAsync(userId);
 
             return lesson.PointsReward;
         }

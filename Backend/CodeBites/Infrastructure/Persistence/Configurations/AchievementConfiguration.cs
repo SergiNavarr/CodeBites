@@ -1,11 +1,6 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Configurations
 {
@@ -13,11 +8,9 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Achievement> builder)
         {
-            // Nombre de la tabla
             builder.ToTable("Achievements");
             builder.HasKey(a => a.Id);
 
-            // Propiedades
             builder.Property(a => a.Name)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -32,16 +25,17 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(a => a.IconUrl)
                 .HasMaxLength(255);
 
-            builder.Property(a => a.Condition)
+            builder.Property(a => a.Type)
                 .IsRequired()
-                .HasMaxLength(250);
+                .HasConversion<string>()
+                .HasMaxLength(50);
 
+            builder.Property(a => a.TargetValue)
+                .IsRequired();
 
-            // Relación 1:N con UserAchievement
             builder.HasMany(a => a.UserAchievements)
                 .WithOne(ua => ua.Achievement)
                 .HasForeignKey(ua => ua.AchievementId)
-                // No permitimos borrar un logro si ya hay usuarios que lo ganaron.
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(a => a.IsActive).HasDefaultValue(true);

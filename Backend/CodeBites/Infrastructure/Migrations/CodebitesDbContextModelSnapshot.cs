@@ -29,11 +29,6 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Condition")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -56,6 +51,14 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<int>("TargetValue")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
@@ -262,14 +265,14 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c2d6f83a-1234-5678-90ab-cdef12345678"),
-                            CreatedAt = new DateTime(2026, 1, 21, 13, 23, 11, 931, DateTimeKind.Utc).AddTicks(690),
+                            CreatedAt = new DateTime(2026, 1, 27, 19, 33, 11, 984, DateTimeKind.Utc).AddTicks(1680),
                             IsActive = true,
                             Name = "Admin"
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"),
-                            CreatedAt = new DateTime(2026, 1, 21, 13, 23, 11, 931, DateTimeKind.Utc).AddTicks(693),
+                            CreatedAt = new DateTime(2026, 1, 27, 19, 33, 11, 984, DateTimeKind.Utc).AddTicks(1683),
                             IsActive = true,
                             Name = "User"
                         });

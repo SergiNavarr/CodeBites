@@ -49,6 +49,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
+builder.Services.AddScoped<IAchievementService, AchievementService>();
 
 
 builder.Services.AddCors(options =>

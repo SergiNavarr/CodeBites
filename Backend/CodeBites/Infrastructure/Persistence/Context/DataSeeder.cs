@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,60 @@ namespace Infrastructure.Persistence.Context
     {
         public static async Task SeedData(CodebitesDbContext context)
         {
+            if (!await context.Achievements.AnyAsync())
+            {
+                var achievements = new List<Achievement>
+                {
+                    new Achievement
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Primer Bocado",
+                        Description = "Completaste tu primera lección.",
+                        IconUrl = "zap",
+                        Type = AchievementType.FirstLesson,
+                        TargetValue = 1,
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new Achievement
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Racha de Fuego",
+                        Description = "Mantuviste una racha de 3 días.",
+                        IconUrl = "flame",
+                        Type = AchievementType.Streak,
+                        TargetValue = 3,
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new Achievement
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Junior Developer",
+                        Description = "Acumulaste 500 puntos de experiencia.",
+                        IconUrl = "trophy",
+                        Type = AchievementType.TotalPoints,
+                        TargetValue = 500,
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    new Achievement
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Code Master",
+                        Description = "Acumulaste 1000 puntos de experiencia.",
+                        IconUrl = "crown",
+                        Type = AchievementType.TotalPoints,
+                        TargetValue = 1000,
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true
+                    }
+                };
+
+                await context.Achievements.AddRangeAsync(achievements);
+                await context.SaveChangesAsync();
+            }
+
             if (await context.Categories.AnyAsync()) return;
 
             var categoriesData = GetFullContentMap();
@@ -25,7 +80,7 @@ namespace Infrastructure.Persistence.Context
                 for (int i = 0; i < catData.Lessons.Count; i++)
                 {
                     var lessonData = catData.Lessons[i];
-                    var lessonId = Guid.NewGuid(); // Este será el PK de la lección y del Quiz
+                    var lessonId = Guid.NewGuid();
 
                     var lesson = new Lesson
                     {
@@ -39,10 +94,9 @@ namespace Infrastructure.Persistence.Context
                     };
                     lessons.Add(lesson);
 
-                    // Generamos el Quiz coherente para esta lección
                     var quiz = new Quiz
                     {
-                        LessonId = lessonId, // PK Compartida
+                        LessonId = lessonId,
                         Title = $"Evaluación: {lessonData.Title}",
                         CreatedAt = DateTime.UtcNow,
                         IsActive = true,
@@ -127,7 +181,6 @@ namespace Infrastructure.Persistence.Context
             };
         }
 
-        // --- CLASES AUXILIARES PARA EL MAPEADO DEL SEED ---
         private class CategorySeedMap
         {
             public string Name, Description, Icon, Color;
@@ -159,7 +212,7 @@ namespace Infrastructure.Persistence.Context
         {
             var lesson = new LessonSeedMap { Title = title, Content = content, Questions = new List<QuestionSeedMap>() };
 
-            for (int i = 1; i <= 10; i++)
+            for (int i = 1; i <= 3; i++)
             {
                 var isEven = i % 2 == 0;
                 lesson.Questions.Add(new QuestionSeedMap
