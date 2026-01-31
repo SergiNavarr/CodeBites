@@ -13,12 +13,13 @@ import { QuizComponent } from "@/components/lessons/quiz-component"
 import { Lesson, QuizDetail, QuizSubmission } from "@/lib/types"
 import { useAuth } from "@/context/auth-context"
 import { toast } from "sonner"
+import { MarkdownRenderer } from "@/components/markdown-renderer"
 
 export default function LessonPage() {
   const params = useParams()
   const router = useRouter()
   const { user, loading: authLoading, refreshUser } = useAuth()
-  
+
   const [lesson, setLesson] = useState<Lesson | null>(null)
   const [quiz, setQuiz] = useState<QuizDetail | null>(null)
   const [loading, setLoading] = useState(true)
@@ -71,16 +72,27 @@ export default function LessonPage() {
     try {
       setIsCompleting(true)
       const result = await QuizService.submit(submission)
-      
+
       if (result.success) {
         await refreshUser()
         setPointsEarned(result.pointsEarned)
         setIsCompleted(true)
+
+        toast.success("¡Excelente trabajo!", {
+          description: `Has ganado +${result.pointsEarned} XP.`,
+        })
+
       } else {
-        toast.error(result.message || "Revisa tus respuestas.")
+        toast.error("Quiz no superado", {
+          description: `Acertaste ${result.correctAnswersCount} de ${result.totalQuestions} preguntas. ${result.message || "Inténtalo de nuevo."}`,
+          duration: 5000,
+        })
       }
     } catch (err) {
-      toast.error("Error al validar el examen.")
+      console.error(err)
+      toast.error("Error de conexión", {
+        description: "No se pudo validar el examen. Intenta nuevamente."
+      })
     } finally {
       setIsCompleting(false)
     }
@@ -112,7 +124,7 @@ export default function LessonPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       <GlobalNavbar />
       <main className="container mx-auto px-4 py-8">
         <Button variant="ghost" onClick={() => showQuiz ? setShowQuiz(false) : router.push(`/lessons/${categoryId}`)} className="mb-6">
@@ -120,14 +132,14 @@ export default function LessonPage() {
           {showQuiz ? "Volver a la teoría" : "Volver al curso"}
         </Button>
 
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-4xl">
           {!showQuiz ? (
             <>
               <Card className="mb-8 border-border/50 bg-card/50 shadow-2xl overflow-hidden">
                 <CardHeader className="border-b border-border/10 bg-muted/20 pb-8">
                   <div className="flex items-center justify-between mb-4">
                     <span className="rounded-full bg-primary/10 px-4 py-1.5 text-xs font-black text-primary uppercase border border-primary/20">
-                      {lesson?.points} XP 
+                      {lesson?.points} XP
                     </span>
                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Teoría</span>
                   </div>
@@ -135,26 +147,28 @@ export default function LessonPage() {
                     {lesson?.title}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="pt-10">
-                  <div className="space-y-6 text-xl leading-relaxed font-medium text-foreground/90">
-                    {lesson?.content?.split("\n\n").map((p, i) => <p key={i}>{p}</p>)}
-                  </div>
+                <CardContent className="pt-10 px-6 md:px-10">
+                  {lesson?.content ? (
+                    <MarkdownRenderer content={lesson.content} />
+                  ) : (
+                    <p className="text-muted-foreground italic">No hay contenido disponible.</p>
+                  )}
                 </CardContent>
               </Card>
 
               <div className="flex justify-end pb-20">
                 {quiz ? (
-                  <Button 
-                    size="lg" 
-                    className="h-16 px-12 text-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20" 
+                  <Button
+                    size="lg"
+                    className="h-16 px-12 text-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20"
                     onClick={() => setShowQuiz(true)}
                   >
                     Continuar al Quiz
                   </Button>
                 ) : (
-                  <Button 
-                    size="lg" 
-                    className="h-16 px-12 text-xl font-black uppercase tracking-widest" 
+                  <Button
+                    size="lg"
+                    className="h-16 px-12 text-xl font-black uppercase tracking-widest"
                     onClick={handleSimpleComplete}
                     disabled={isCompleting}
                   >

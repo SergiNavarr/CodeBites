@@ -92,7 +92,6 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<CodebitesDbContext>();
-    await DataSeeder.SeedData(context); 
 }
 
 // Configuración del Pipeline de HTTP (Middleware)

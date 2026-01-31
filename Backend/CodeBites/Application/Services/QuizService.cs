@@ -59,7 +59,8 @@ namespace Application.Services
                 }
             }
 
-            bool passed = correctCount == totalQuestions;
+            double percentage = (double)correctCount / totalQuestions;
+            bool passed = percentage >= 0.6;
 
             int pointsEarned = 0;
             if (passed)
