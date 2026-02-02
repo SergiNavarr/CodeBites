@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces;
-using Application.DTOs.Lesson;
+using Application.DTOs.Lesson; // Asegúrate de que este namespace coincida con tus DTOs
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -30,6 +30,7 @@ namespace Application.Services
             _mapper = mapper;
             _achievementService = achievementService;
         }
+
 
         public async Task<LessonDetailDto?> GetLessonDetailAsync(Guid lessonId, Guid userId)
         {
@@ -106,10 +107,78 @@ namespace Application.Services
             }
 
             await _userRepo.SaveChangesAsync();
-
             await _achievementService.CheckAndUnlockAchievementsAsync(userId);
 
             return lesson.PointsReward;
+        }
+
+        public async Task<LessonDetailDto> CreateLessonAsync(CreateLessonDto dto)
+        {
+            var lesson = new Lesson
+            {
+                Id = Guid.NewGuid(),
+                CategoryId = dto.CategoryId,
+                Title = dto.Title,
+                Content = dto.Content,
+                Order = dto.Order,
+                PointsReward = dto.PointsReward,
+                Difficulty = dto.Difficulty,
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            };
+
+            await _lessonRepo.AddAsync(lesson);
+            await _lessonRepo.SaveChangesAsync();
+
+            return new LessonDetailDto
+            {
+                Id = lesson.Id,
+                Title = lesson.Title,
+                Content = lesson.Content,
+                Points = lesson.PointsReward,
+                IsCompleted = false,
+                NextLessonId = null,
+                QuizId = null
+            };
+        }
+
+        public async Task<LessonDetailDto?> UpdateLessonAsync(Guid id, UpdateLessonDto dto)
+        {
+            var lesson = await _lessonRepo.GetByIdAsync(id);
+            if (lesson == null) return null;
+
+            lesson.Title = dto.Title;
+            lesson.Content = dto.Content;
+            lesson.Order = dto.Order;
+            lesson.PointsReward = dto.PointsReward;
+            lesson.Difficulty = dto.Difficulty;
+            lesson.IsActive = dto.IsActive;
+
+            _lessonRepo.Update(lesson);
+            await _lessonRepo.SaveChangesAsync();
+
+            return new LessonDetailDto
+            {
+                Id = lesson.Id,
+                Title = lesson.Title,
+                Content = lesson.Content,
+                Points = lesson.PointsReward,
+                Order = lesson.Order,
+                IsCompleted = false,
+                NextLessonId = null,
+                QuizId = null
+            };
+        }
+
+        public async Task<bool> DeleteLessonAsync(Guid id)
+        {
+            var lesson = await _lessonRepo.GetByIdAsync(id);
+            if (lesson == null) return false;
+
+            _lessonRepo.Delete(lesson);
+            await _lessonRepo.SaveChangesAsync();
+
+            return true;
         }
     }
 }

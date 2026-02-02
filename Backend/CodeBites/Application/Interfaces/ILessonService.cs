@@ -11,6 +11,8 @@ namespace Application.Interfaces
     {
         Task<LessonDetailDto> GetLessonDetailAsync(Guid lessonId, Guid userId);
         Task<int> CompleteLessonAsync(Guid lessonId, Guid userId);
-        
+        Task<LessonDetailDto> CreateLessonAsync(CreateLessonDto dto);
+        Task<LessonDetailDto?> UpdateLessonAsync(Guid id, UpdateLessonDto dto);
+        Task<bool> DeleteLessonAsync(Guid id);
     }
 }
