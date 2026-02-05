@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { GlobalNavbar } from "@/components/global-navbar"
 import { 
   Terminal, 
   Cpu, 
@@ -20,26 +21,7 @@ export default function LandingPage() {
       <div className="fixed inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]">
         <div className="absolute left-1/2 top-0 -translate-x-1/2 bg-primary/20 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20" />
       </div>
-
-      {/* --- NAVBAR --- */}
-      <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-          <div className="flex items-center gap-2 font-bold text-xl tracking-tighter">
-            <div className="bg-primary/10 p-2 rounded-lg">
-              <Code2 className="h-5 w-5 text-primary" />
-            </div>
-            <span>CodeBites</span>
-          </div>
-          <div className="flex gap-4">
-            <Button variant="ghost" asChild className="hidden sm:inline-flex">
-              <Link href="/login">Ingresar</Link>
-            </Button>
-            <Button asChild className="shadow-lg shadow-primary/20">
-              <Link href="/register">Empezar Gratis</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
+      <GlobalNavbar /> 
 
       {/* --- HERO SECTION --- */}
       <main className="flex-1 w-full">

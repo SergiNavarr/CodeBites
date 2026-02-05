@@ -3,14 +3,15 @@
 import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { UserService } from "@/lib/services/userService" // Importamos el Servicio
-import { useAuth } from "@/context/auth-context" // Importamos el Contexto
+import { UserService } from "@/lib/services/userService"
+import { useAuth } from "@/context/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Code2, Loader2, Mail, Lock } from "lucide-react"
+import { Loader2, Mail, Lock } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -43,11 +44,19 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-      <Link href="/" className="mb-8 flex items-center gap-2">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-          <Code2 className="h-6 w-6 text-primary-foreground" />
+      <Link href="/" className="mb-8 flex items-center gap-3">
+        <div className="relative h-10 w-12"> 
+          <Image
+            src="/logo-bites.png"
+            alt="CodeBites Logo"
+            fill
+            className="object-contain"
+            priority
+          />
         </div>
-        <span className="text-2xl font-bold">CodeBites</span>
+        <span className="text-2xl font-bold tracking-tight text-foreground"> 
+          Code<span className="text-[#4ade80]">Bites</span>
+        </span>
       </Link>
 
       <Card className="w-full max-w-md border-border/50 bg-card shadow-xl shadow-primary/5">

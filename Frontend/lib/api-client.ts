@@ -6,10 +6,9 @@ class ApiClient {
   private baseUrl: string
 
   constructor(baseUrl: string) {
-    this.baseUrl = baseUrl
+    this.baseUrl = baseUrl.replace(/\/$/, "")
   }
 
-  // Gestión interna del Token JWT
   private getToken(): string | null {
     if (typeof window !== "undefined") {
       return localStorage.getItem("auth_token")
@@ -18,11 +17,15 @@ class ApiClient {
   }
 
   public setToken(token: string) {
-    localStorage.setItem("auth_token", token)
+    if (typeof window !== "undefined") {
+      localStorage.setItem("auth_token", token)
+    }
   }
 
   public removeToken() {
-    localStorage.removeItem("auth_token")
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("auth_token")
+    }
   }
 
   /**
@@ -30,7 +33,9 @@ class ApiClient {
    * Maneja headers, inyección de JWT y errores globales.
    */
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`
+    const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`
+    const url = `${this.baseUrl}${normalizedEndpoint}`
+    
     const token = this.getToken()
 
     const headers = new Headers(options.headers)
@@ -52,23 +57,37 @@ class ApiClient {
         this.removeToken()
       }
 
-      const data = await response.json()
+      if (response.status === 204) {
+        return {} as T
+      }
+
+      let data: any
+      const contentType = response.headers.get("content-type")
+      
+      if (contentType && contentType.includes("application/json")) {
+        try {
+          data = await response.json()
+        } catch (error) {
+          data = null 
+        }
+      } else {
+        data = await response.text() 
+      }
 
       if (!response.ok) {
-        throw new Error(data.message || data.title || "Something went wrong")
+        const errorMessage = data?.message || data?.title || response.statusText || "Error desconocido"
+        throw new Error(errorMessage)
       }
 
       return data as T
-    } catch (error) {
-      console.error(`API Error [${url}]:`, error)
+      
+    } catch (error: any) {
+      console.error(`API Error [${url}]:`, error.message)
       throw error
     }
   }
 
-  /**
-   * MÉTODOS PÚBLICOS
-   */
-  
+
   public async get<T>(endpoint: string): Promise<T> {
     return this.request<T>(endpoint, { method: "GET" })
   }
