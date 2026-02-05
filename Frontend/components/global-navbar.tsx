@@ -42,7 +42,6 @@ export function GlobalNavbar() {
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           
-          {/* LOGO NUEVO */}
           <Link href="/" className="flex items-center gap-3">
             <div className="relative h-8 w-10">
               <Image
