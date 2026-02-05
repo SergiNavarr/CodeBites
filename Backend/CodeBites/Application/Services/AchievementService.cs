@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces;
 using System;
+using System.Collections.Generic; // Importante para List<>
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,27 +25,26 @@ namespace Application.Services
             _userAchievementRepository = userAchievementRepository;
         }
 
-        public async Task CheckAndUnlockAchievementsAsync(Guid userId)
+        public async Task<List<Achievement>> CheckAndUnlockAchievementsAsync(Guid userId)
         {
             var user = await _userRepository.GetUserWithDetailsAsync(userId);
-            if (user == null) return;
+            if (user == null) return new List<Achievement>();
 
             var allAchievements = await _achievementRepository.GetAllAsync();
+            var existingIds = user.Achievements.Select(ua => ua.AchievementId).ToHashSet();
 
-            var existingAchievementIds = user.Achievements.Select(ua => ua.AchievementId).ToHashSet();
-
-            bool newUnlock = false;
+            var unlockedNow = new List<Achievement>();
 
             foreach (var achievement in allAchievements)
             {
-                if (existingAchievementIds.Contains(achievement.Id)) continue;
+                if (existingIds.Contains(achievement.Id)) continue;
 
                 bool criteriaMet = false;
 
                 switch (achievement.Type)
                 {
                     case AchievementType.FirstLesson:
-                        criteriaMet = user.Progress.Any();
+                        criteriaMet = user.Progress != null && user.Progress.Any();
                         break;
 
                     case AchievementType.TotalPoints:
@@ -53,6 +53,9 @@ namespace Application.Services
 
                     case AchievementType.Streak:
                         criteriaMet = user.CurrentStreak >= achievement.TargetValue;
+                        break;
+
+                    case AchievementType.CompleteCategory:
                         break;
                 }
 
@@ -65,14 +68,17 @@ namespace Application.Services
                         AchievementId = achievement.Id,
                         UnlockedAt = DateTime.UtcNow
                     });
-                    newUnlock = true;
+
+                    unlockedNow.Add(achievement);
                 }
             }
 
-            if (newUnlock)
+            if (unlockedNow.Any())
             {
                 await _userAchievementRepository.SaveChangesAsync();
             }
+
+            return unlockedNow;
         }
     }
 }

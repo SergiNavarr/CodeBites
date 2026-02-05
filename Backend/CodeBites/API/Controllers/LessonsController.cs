@@ -11,13 +11,15 @@ namespace API.Controllers
     public class LessonsController : ControllerBase
     {
         private readonly ILessonService _lessonService;
+        private readonly IAchievementService _achievementService;
 
         private Guid CurrentUserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? throw new UnauthorizedAccessException("Usuario no identificado"));
 
-        public LessonsController(ILessonService lessonService)
+        public LessonsController(ILessonService lessonService, IAchievementService achievementService)
         {
             _lessonService = lessonService;
+            _achievementService = achievementService;
         }
 
         /// <summary>
@@ -46,10 +48,14 @@ namespace API.Controllers
             {
                 var pointsEarned = await _lessonService.CompleteLessonAsync(id, CurrentUserId);
 
+                // Esto devuelve una lista de los logros desbloqueados en este momento
+                var unlockedAchievements = await _achievementService.CheckAndUnlockAchievementsAsync(CurrentUserId);
+
                 return Ok(new
                 {
                     message = "¡Lección completada!",
-                    points = pointsEarned
+                    points = pointsEarned,
+                    newAchievements = unlockedAchievements
                 });
             }
             catch (Exception ex)

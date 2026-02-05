@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Application.Interfaces
 {
     public interface IAchievementService
     {
-        Task CheckAndUnlockAchievementsAsync(Guid userId);
+        Task<List<Achievement>> CheckAndUnlockAchievementsAsync(Guid userId);
     }
 }
