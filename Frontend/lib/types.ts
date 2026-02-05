@@ -143,3 +143,12 @@ export interface UserProfile {
   achievements: UserAchievement[];
   recentActivities: RecentActivity[];
 }
+
+export interface CreateLessonDto {
+  title: string
+  categoryId: string
+  content: string
+  order: number
+  pointsReward: number
+  difficulty: number
+}

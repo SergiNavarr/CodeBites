@@ -265,14 +265,14 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("c2d6f83a-1234-5678-90ab-cdef12345678"),
-                            CreatedAt = new DateTime(2026, 1, 27, 19, 33, 11, 984, DateTimeKind.Utc).AddTicks(1680),
+                            CreatedAt = new DateTime(2026, 2, 3, 6, 21, 25, 361, DateTimeKind.Utc).AddTicks(6028),
                             IsActive = true,
                             Name = "Admin"
                         },
                         new
                         {
                             Id = new Guid("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"),
-                            CreatedAt = new DateTime(2026, 1, 27, 19, 33, 11, 984, DateTimeKind.Utc).AddTicks(1683),
+                            CreatedAt = new DateTime(2026, 2, 3, 6, 21, 25, 361, DateTimeKind.Utc).AddTicks(6031),
                             IsActive = true,
                             Name = "User"
                         });

@@ -1,6 +1,10 @@
 import { apiClient } from "@/lib/api-client";
-import { Lesson } from "@/lib/types";
+import { Lesson , CreateLessonDto } from "@/lib/types";
 
+
+/**
+ * Datos necesarios para crear una lección desde el panel de Admin
+ */
 /**
  * Respuesta esperada al completar una lección.
  */
@@ -15,7 +19,6 @@ export const LessonService = {
    * Llama a: GET /api/Lessons/{id}
    */
   getById: async (id: string): Promise<Lesson> => {
-    // Usamos el método .get<T> de tu ApiClient
     return await apiClient.get<Lesson>(`/Lessons/${id}`);
   },
 
@@ -24,7 +27,13 @@ export const LessonService = {
    * Llama a: POST /api/Lessons/{id}/complete
    */
   complete: async (id: string): Promise<CompleteLessonResponse> => {
-    // Usamos el método .post<T> de tu ApiClient
     return await apiClient.post<CompleteLessonResponse>(`/Lessons/${id}/complete`);
+  },
+
+  /**
+   * Llama a: POST /api/admin/lessons
+   */
+  create: async (data: CreateLessonDto): Promise<Lesson> => {
+    return await apiClient.post<Lesson>('/admin/lessons', data);
   }
 };

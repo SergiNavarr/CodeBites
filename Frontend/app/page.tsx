@@ -1,186 +1,275 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Code2, Zap, Trophy, Target, ChevronRight, Terminal } from "lucide-react"
+import { 
+  Terminal, 
+  Cpu, 
+  Database, 
+  Zap, 
+  Trophy, 
+  Flame, 
+  ArrowRight, 
+  Code2, 
+  Check, 
+} from "lucide-react"
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border/50">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <Code2 className="h-5 w-5 text-primary-foreground" />
+    <div className="min-h-screen bg-background text-foreground flex flex-col w-full overflow-x-hidden">
+      
+      {/* --- BACKGROUND FX --- */}
+      <div className="fixed inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]">
+        <div className="absolute left-1/2 top-0 -translate-x-1/2 bg-primary/20 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20" />
+      </div>
+
+      {/* --- NAVBAR --- */}
+      <nav className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+          <div className="flex items-center gap-2 font-bold text-xl tracking-tighter">
+            <div className="bg-primary/10 p-2 rounded-lg">
+              <Code2 className="h-5 w-5 text-primary" />
             </div>
-            <span className="text-xl font-bold">CodeBites</span>
+            <span>CodeBites</span>
           </div>
-          <nav className="hidden items-center gap-6 md:flex">
-            <Link href="#features" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-              Features
-            </Link>
-            <Link href="#categories" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-              Categories
-            </Link>
-          </nav>
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Log in</Link>
+          <div className="flex gap-4">
+            <Button variant="ghost" asChild className="hidden sm:inline-flex">
+              <Link href="/login">Ingresar</Link>
             </Button>
-            <Button asChild className="shadow-lg shadow-primary/25">
-              <Link href="/register">Get Started</Link>
+            <Button asChild className="shadow-lg shadow-primary/20">
+              <Link href="/register">Empezar Gratis</Link>
             </Button>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-24 text-center md:py-32">
-        <div className="mx-auto max-w-3xl">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm text-primary">
-            <Zap className="h-4 w-4" />
-            <span>Micro-learning for developers</span>
+      {/* --- HERO SECTION --- */}
+      <main className="flex-1 w-full">
+        <section className="container mx-auto px-4 py-24 md:py-32 flex flex-col items-center text-center space-y-8">
+          
+          {/* Badge de "Beta" */}
+          <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm font-medium text-primary backdrop-blur-sm">
+            <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
+            Nuevo Módulo: Fundamentos C# Pro
           </div>
-          <h1 className="mb-6 text-balance text-4xl font-bold tracking-tight md:text-6xl">
-            Master code in <span className="text-primary">bite-sized</span> lessons
+
+          <h1 className="text-4xl md:text-7xl font-black tracking-tight text-balance max-w-4xl mx-auto">
+            Aprende a programar <br className="hidden md:block"/>
+            <span className="text-primary bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-primary animate-gradient">
+              un bocado a la vez.
+            </span>
           </h1>
-          <p className="mb-10 text-pretty text-lg text-muted-foreground md:text-xl">
-            Learn programming concepts in minutes, not hours. Build streaks, earn points, and level up your developer
-            skills with gamified micro-learning.
+
+          <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto text-balance">
+            Olvídate de los cursos de 40 horas. CodeBites te ofrece lecciones interactivas de 
+            <strong> 5 minutos</strong> diseñadas para mantener tu racha y tu motivación.
           </p>
-          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button size="lg" asChild className="h-12 px-8 shadow-lg shadow-primary/25">
+
+          <div className="flex flex-col sm:flex-row gap-4 w-full justify-center pt-4">
+            <Button size="lg" className="h-12 px-8 text-base group" asChild>
               <Link href="/register">
-                Start Learning Free
-                <ChevronRight className="ml-2 h-5 w-5" />
+                Crear Cuenta
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="h-12 px-8 bg-transparent">
-              <Link href="/dashboard">Explore Dashboard</Link>
+            <Button size="lg" variant="outline" className="h-12 px-8 text-base" asChild>
+              <Link href="/dashboard">Ver Rutas de Aprendizaje</Link>
             </Button>
           </div>
-        </div>
-      </section>
 
-      {/* Stats Section */}
-      <section className="border-y border-border/50 bg-card/50">
-        <div className="container mx-auto grid grid-cols-2 gap-8 px-4 py-12 md:grid-cols-4">
-          {[
-            { value: "500+", label: "Bite-sized Lessons" },
-            { value: "12", label: "Technologies" },
-            { value: "50K+", label: "Developers" },
-            { value: "5 min", label: "Average Lesson" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-3xl font-bold text-primary md:text-4xl">{stat.value}</div>
-              <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="container mx-auto px-4 py-24">
-        <div className="mb-16 text-center">
-          <h2 className="mb-4 text-3xl font-bold md:text-4xl">Why CodeBites?</h2>
-          <p className="text-muted-foreground">Built for developers who value their time</p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {[
-            {
-              icon: Zap,
-              title: "Quick Lessons",
-              description: "Each lesson takes 5 minutes or less. Perfect for coffee breaks or commutes.",
-              color: "text-primary bg-primary/10",
-            },
-            {
-              icon: Trophy,
-              title: "Gamified Progress",
-              description: "Earn points, maintain streaks, and unlock achievements as you learn.",
-              color: "text-achievement bg-achievement/10",
-            },
-            {
-              icon: Target,
-              title: "Focused Learning",
-              description: "One concept at a time. No fluff, just the essentials you need to know.",
-              color: "text-progress bg-progress/10",
-            },
-          ].map((feature) => (
-            <div
-              key={feature.title}
-              className="group rounded-xl border border-border/50 bg-card p-6 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
-            >
-              <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg ${feature.color}`}>
-                <feature.icon className="h-6 w-6" />
-              </div>
-              <h3 className="mb-2 text-lg font-semibold">{feature.title}</h3>
-              <p className="text-muted-foreground">{feature.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Categories Preview */}
-      <section id="categories" className="border-t border-border/50 bg-card/30">
-        <div className="container mx-auto px-4 py-24">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold md:text-4xl">Popular Categories</h2>
-            <p className="text-muted-foreground">Start with what interests you most</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { name: "C#", lessons: 48, color: "from-[#68217A] to-[#9B4DCA]" },
-              { name: "React", lessons: 56, color: "from-[#00D8FF] to-[#0097A7]" },
-              { name: "SQL", lessons: 42, color: "from-[#F29111] to-[#D35400]" },
-              { name: "TypeScript", lessons: 52, color: "from-[#3178C6] to-[#235A97]" },
-            ].map((category) => (
-              <Link
-                key={category.name}
-                href="/dashboard"
-                className="group relative overflow-hidden rounded-xl border border-border/50 bg-card p-6 transition-all hover:border-primary/50 hover:shadow-lg"
-              >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-5 transition-opacity group-hover:opacity-10`}
-                />
-                <div className="relative">
-                  <Terminal className="mb-3 h-8 w-8 text-muted-foreground transition-colors group-hover:text-primary" />
-                  <h3 className="mb-1 text-lg font-semibold">{category.name}</h3>
-                  <p className="text-sm text-muted-foreground">{category.lessons} lessons</p>
+          {/* CODE DEMO VISUAL */}
+          <div className="mt-16 w-full max-w-3xl perspective-1000 mx-auto">
+            <div className="relative rounded-xl border bg-card shadow-2xl overflow-hidden transform rotate-x-12 transition-transform hover:rotate-0 duration-700">
+              <div className="flex items-center gap-2 px-4 py-3 border-b bg-muted/50">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/80" />
                 </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-24">
-        <div className="rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 via-background to-progress/10 p-12 text-center md:p-16">
-          <h2 className="mb-4 text-3xl font-bold md:text-4xl">Ready to level up?</h2>
-          <p className="mx-auto mb-8 max-w-xl text-muted-foreground">
-            Join thousands of developers who are learning smarter, not harder. Start your first lesson in under 30
-            seconds.
-          </p>
-          <Button size="lg" asChild className="h-12 px-8 shadow-lg shadow-primary/25">
-            <Link href="/register">
-              Create Free Account
-              <ChevronRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-border/50">
-        <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-8 md:flex-row">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Code2 className="h-4 w-4 text-primary-foreground" />
+                <div className="ml-4 text-xs font-mono text-muted-foreground">Lección_01.cs</div>
+              </div>
+              <div className="p-6 text-left font-mono text-sm overflow-x-auto bg-[#09090b]">
+                <p className="text-gray-500 mb-2">// Tu código en CodeBites se ve así:</p>
+                <p className="text-purple-400">using <span className="text-foreground">System;</span></p>
+                <br />
+                <p className="text-blue-400">public class <span className="text-yellow-300">Program</span></p>
+                <p className="text-foreground">{"{"}</p>
+                <p className="pl-4 text-blue-400">public static void <span className="text-yellow-300">Main</span>()</p>
+                <p className="pl-4 text-foreground">{"{"}</p>
+                <p className="pl-8 text-foreground">Console.WriteLine(<span className="text-green-400">"¡Hola, CodeBites!"</span>);</p>
+                <p className="pl-8 text-gray-500">// Ganas +100 XP al completar esto</p>
+                <p className="pl-4 text-foreground">{"}"}</p>
+                <p className="text-foreground">{"}"}</p>
+              </div>
             </div>
-            <span className="font-semibold">CodeBites</span>
           </div>
-          <p className="text-sm text-muted-foreground">© 2026 CodeBites. Built for developers, by developers.</p>
+        </section>
+
+        {/* --- CURRICULUM REAL --- */}
+        <section className="w-full border-t border-border/50">
+            <div className="container mx-auto px-4 py-24">
+              <div className="mb-12 text-center">
+                <h2 className="text-3xl font-bold tracking-tight mb-4">Rutas Oficiales</h2>
+                <p className="text-muted-foreground">Contenido estructurado desde la base de datos hasta tu pantalla.</p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6">
+                {/* CARD 1: C# */}
+                <div className="group relative overflow-hidden rounded-2xl border bg-card p-6 hover:shadow-lg transition-all hover:border-primary/50">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-purple-500/10 rounded-lg text-purple-500">
+                      <Terminal className="h-6 w-6" />
+                    </div>
+                    <span className="text-xs font-mono bg-muted px-2 py-1 rounded">Backend</span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">C# Fundamentos Pro</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Domina la sintaxis, tipos de datos, control de flujo y POO en .NET 8.
+                  </p>
+                  <ul className="text-sm space-y-2 mb-6 text-muted-foreground">
+                    <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-green-500"/> Variables y Tipos</li>
+                    <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-green-500"/> Control de Flujo</li>
+                    <li className="flex items-center"><Check className="h-4 w-4 mr-2 text-green-500"/> Métodos y Funciones</li>
+                  </ul>
+                </div>
+
+                {/* CARD 2: React */}
+                <div className="group relative overflow-hidden rounded-2xl border bg-card p-6 hover:shadow-lg transition-all hover:border-cyan-500/50">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-cyan-500/10 rounded-lg text-cyan-500">
+                      <Cpu className="h-6 w-6" />
+                    </div>
+                    <span className="text-xs font-mono bg-muted px-2 py-1 rounded">Frontend</span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">React Moderno</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Crea interfaces dinámicas con Hooks, componentes funcionales y Tailwind.
+                  </p>
+                  <div className="mt-auto pt-4 border-t border-border/50">
+                    <p className="text-xs text-muted-foreground">Próximamente disponible</p>
+                  </div>
+                </div>
+
+                {/* CARD 3: SQL */}
+                <div className="group relative overflow-hidden rounded-2xl border bg-card p-6 hover:shadow-lg transition-all hover:border-orange-500/50">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-orange-500/10 rounded-lg text-orange-500">
+                      <Database className="h-6 w-6" />
+                    </div>
+                    <span className="text-xs font-mono bg-muted px-2 py-1 rounded">Data</span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">SQL & Bases de Datos</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Aprende a diseñar esquemas, consultas complejas y optimización con PostgreSQL.
+                  </p>
+                  <div className="mt-auto pt-4 border-t border-border/50">
+                    <p className="text-xs text-muted-foreground">Próximamente disponible</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </section>
+
+        {/* --- GAMIFICATION --- */}
+        <section className="border-y border-border/50 bg-muted/20 w-full">
+          <div className="container mx-auto px-4 py-24 grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <div className="inline-flex items-center rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 text-sm font-medium text-yellow-500">
+                <Trophy className="mr-2 h-4 w-4" />
+                Sistema de Progreso
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                Aprender es adictivo cuando ganas recompensas.
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Implementamos un sistema real de experiencia (XP) y rachas diarias para que no pierdas el hábito.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-500">
+                    <Flame className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold">Rachas (Streaks)</h4>
+                    <p className="text-sm text-muted-foreground">No rompas la cadena. Tu consistencia se guarda en la base de datos.</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500">
+                    <Zap className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold">XP y Niveles</h4>
+                    <p className="text-sm text-muted-foreground">Gana puntos por cada lección y quiz completado.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Visual Abstracto */}
+            <div className="relative h-[400px] w-full bg-card border rounded-2xl shadow-xl p-8 flex flex-col justify-center items-center gap-6">
+              <div className="absolute inset-0 bg-grid-pattern opacity-10" />
+              
+              <div className="w-full max-w-sm bg-background border p-4 rounded-xl shadow-sm flex items-center justify-between animate-in slide-in-from-right duration-700">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                    <Flame className="h-6 w-6 text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="font-bold">Racha Actual</p>
+                    <p className="text-xs text-muted-foreground">¡Estás en llamas!</p>
+                  </div>
+                </div>
+                <span className="text-2xl font-black text-foreground">5 Días</span>
+              </div>
+
+              <div className="w-full max-w-sm bg-background border p-4 rounded-xl shadow-sm flex items-center justify-between animate-in slide-in-from-left duration-700 delay-150">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                    <Zap className="h-6 w-6 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="font-bold">Total XP</p>
+                    <p className="text-xs text-muted-foreground">Nivel Junior</p>
+                  </div>
+                </div>
+                <span className="text-2xl font-black text-foreground">1,250 XP</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* --- CTA FINAL --- */}
+        <section className="container mx-auto px-4 py-24 text-center">
+          <div className="max-w-3xl mx-auto space-y-8">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+              ¿Listo para escribir tu primera línea?
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Únete ahora y accede al módulo de C# Fundamentos completamente gratis.
+              Sin tarjetas de crédito, solo código.
+            </p>
+            <Button size="lg" className="h-14 px-10 text-lg shadow-2xl shadow-primary/30" asChild>
+              <Link href="/register">Comenzar Ahora</Link>
+            </Button>
+          </div>
+        </section>
+      </main>
+
+      {/* --- FOOTER --- */}
+      <footer className="border-t py-12 bg-muted/20 text-center md:text-left w-full">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2 font-bold">
+            <Code2 className="h-5 w-5 text-primary" />
+            <span>CodeBites</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            © 2026 CodeBites. Construido con .NET 8 y Next.js.
+          </p>
         </div>
       </footer>
+
     </div>
   )
 }
