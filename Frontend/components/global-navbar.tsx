@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Code2, User, LogOut, Trophy, Flame } from "lucide-react"
+import { User, LogOut, Trophy, Flame } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,16 +36,28 @@ export function GlobalNavbar() {
     )
   }
 
+  // ESTADO: NO LOGUEADO
   if (!user) {
     return (
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <Code2 className="h-5 w-5 text-primary-foreground" />
+          
+          {/* LOGO NUEVO */}
+          <Link href="/" className="flex items-center gap-3">
+            <div className="relative h-8 w-10">
+              <Image
+                src="/logo-bites.png"
+                alt="CodeBites Logo"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
-            <span className="text-xl font-bold">CodeBites</span>
+            <span className="text-xl font-bold tracking-tight text-white">
+              Code<span className="text-[#4ade80]">Bites</span>
+            </span>
           </Link>
+
           <Button asChild variant="default" size="sm">
             <Link href="/login">Sign In</Link>
           </Button>
@@ -53,15 +66,25 @@ export function GlobalNavbar() {
     )
   }
 
+  // ESTADO: LOGUEADO
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <Code2 className="h-5 w-5 text-primary-foreground" />
+        
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <div className="relative h-8 w-10">
+            <Image
+              src="/logo-bites.png"
+              alt="CodeBites Logo"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
-          <span className="text-xl font-bold">CodeBites</span>
+
+          <span className="text-xl font-bold tracking-tight text-white">
+            Code<span className="text-[#4ade80]">Bites</span>
+          </span>
         </Link>
 
         {/* Gamification Stats & User Menu */}

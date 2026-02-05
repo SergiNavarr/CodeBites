@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation"
 import { GlobalNavbar } from "@/components/global-navbar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Trophy, Loader2 } from "lucide-react"
+import { ArrowLeft, Trophy, Loader2, Medal } from "lucide-react" 
 import { LessonService } from "@/lib/services/lessonService"
 import { QuizService } from "@/lib/services/quizService"
 import { QuizComponent } from "@/components/lessons/quiz-component"
@@ -57,10 +57,36 @@ export default function LessonPage() {
   async function handleSimpleComplete() {
     try {
       setIsCompleting(true)
+      
       const result = await LessonService.complete(lessonId)
+      
       await refreshUser()
       setPointsEarned(result.points)
       setIsCompleted(true)
+
+      toast.success("¡Lección completada!", {
+        description: `Has ganado +${result.points} XP`
+      })
+
+      if (result.newAchievements && result.newAchievements.length > 0) {
+        result.newAchievements.forEach((achievement) => {
+          toast.success("¡LOGRO DESBLOQUEADO!", {
+            description: achievement.name,
+            icon: <Trophy className="h-5 w-5 text-yellow-500 fill-yellow-500/20" />,
+            duration: 6000,
+            style: {
+              borderColor: "#eab308",
+              backgroundColor: "hsl(var(--background))", 
+              borderWidth: "2px"
+            },
+            action: {
+              label: "Ver",
+              onClick: () => router.push("/profile") 
+            }
+          })
+        })
+      }
+
     } catch (err) {
       toast.error("No se pudo completar la lección.")
     } finally {
@@ -81,6 +107,7 @@ export default function LessonPage() {
         toast.success("¡Excelente trabajo!", {
           description: `Has ganado +${result.pointsEarned} XP.`,
         })
+        
 
       } else {
         toast.error("Quiz no superado", {
@@ -110,13 +137,30 @@ export default function LessonPage() {
     return (
       <div className="min-h-screen bg-background">
         <GlobalNavbar />
-        <main className="container mx-auto flex flex-col items-center justify-center px-4 py-20 text-center">
-          <Trophy className="h-16 w-16 text-primary mb-6 animate-bounce" />
-          <h1 className="text-5xl font-black mb-4 uppercase tracking-tighter italic">¡Bite Completado!</h1>
-          <p className="text-6xl font-black text-primary mb-12">+{pointsEarned} XP</p>
+        <main className="container mx-auto flex flex-col items-center justify-center px-4 py-20 text-center animate-in fade-in zoom-in duration-500">
+          
+          {/* Animación simple de trofeo */}
+          <div className="relative mb-8">
+             <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
+             <Trophy className="relative h-24 w-24 text-primary animate-bounce" />
+          </div>
+
+          <h1 className="text-5xl font-black mb-4 uppercase tracking-tighter italic bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
+            ¡Bite Completado!
+          </h1>
+          
+          <p className="text-7xl font-black text-foreground mb-2">
+            +{pointsEarned} <span className="text-2xl text-muted-foreground align-top">XP</span>
+          </p>
+          <p className="text-muted-foreground mb-12">¡Sigue así, la racha continúa!</p>
+
           <div className="flex gap-4">
-            <Button size="lg" asChild><Link href={`/lessons/${categoryId}`}>Continuar</Link></Button>
-            <Button variant="outline" size="lg" asChild><Link href="/dashboard">Panel</Link></Button>
+            <Button size="lg" className="h-12 px-8 shadow-xl shadow-primary/20" asChild>
+                <Link href={`/lessons/${categoryId}`}>Continuar Aprendiendo</Link>
+            </Button>
+            <Button variant="outline" size="lg" className="h-12 px-8" asChild>
+                <Link href="/dashboard">Volver al Panel</Link>
+            </Button>
           </div>
         </main>
       </div>
@@ -160,7 +204,7 @@ export default function LessonPage() {
                 {quiz ? (
                   <Button
                     size="lg"
-                    className="h-16 px-12 text-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20"
+                    className="h-16 px-12 text-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-transform"
                     onClick={() => setShowQuiz(true)}
                   >
                     Continuar al Quiz
@@ -168,11 +212,16 @@ export default function LessonPage() {
                 ) : (
                   <Button
                     size="lg"
-                    className="h-16 px-12 text-xl font-black uppercase tracking-widest"
+                    className="h-16 px-12 text-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-transform"
                     onClick={handleSimpleComplete}
                     disabled={isCompleting}
                   >
-                    {isCompleting ? "Completando..." : "Finalizar Lección"}
+                    {isCompleting ? (
+                        <>
+                            <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                            Procesando...
+                        </>
+                    ) : "Finalizar Lección"}
                   </Button>
                 )}
               </div>

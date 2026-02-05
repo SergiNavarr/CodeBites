@@ -152,3 +152,12 @@ export interface CreateLessonDto {
   pointsReward: number
   difficulty: number
 }
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  iconUrl: string;
+  type?: number;
+  targetValue?: number;
+}

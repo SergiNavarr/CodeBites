@@ -1,16 +1,14 @@
 import { apiClient } from "@/lib/api-client";
-import { Lesson , CreateLessonDto } from "@/lib/types";
+import { Lesson, CreateLessonDto, Achievement } from "@/lib/types"; 
 
-
-/**
- * Datos necesarios para crear una lección desde el panel de Admin
- */
 /**
  * Respuesta esperada al completar una lección.
+ * Actualizada para incluir los logros desbloqueados.
  */
 interface CompleteLessonResponse {
   message: string;
   points: number;
+  newAchievements: Achievement[];
 }
 
 export const LessonService = {
@@ -23,7 +21,7 @@ export const LessonService = {
   },
 
   /**
-   * Marca la lección como completada y suma los puntos al usuario.
+   * Marca la lección como completada, suma puntos y VERIFICA LOGROS.
    * Llama a: POST /api/Lessons/{id}/complete
    */
   complete: async (id: string): Promise<CompleteLessonResponse> => {
