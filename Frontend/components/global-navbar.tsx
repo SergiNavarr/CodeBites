@@ -71,7 +71,7 @@ export function GlobalNavbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         
         <Link href="/dashboard" className="flex items-center gap-3">
-          <div className="relative h-8 w-10">
+          <div className="relative h-8 w-10 -mr-2">
             <Image
               src="/logo-bites.png"
               alt="CodeBites Logo"
