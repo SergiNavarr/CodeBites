@@ -16,7 +16,7 @@ import { useAuth } from "@/context/auth-context"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export function GlobalNavbar() {
-  const { user, loading } = useAuth()
+  const { user, loading, logout } = useAuth()
 
   if (loading) {
     return (
@@ -41,7 +41,7 @@ export function GlobalNavbar() {
     return (
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          
+
           <Link href="/" className="flex items-center gap-3">
             <div className="relative h-8 w-10 -mr-2">
               <Image
@@ -69,7 +69,7 @@ export function GlobalNavbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        
+
         <Link href="/dashboard" className="flex items-center gap-3">
           <div className="relative h-8 w-10 -mr-2">
             <Image
@@ -87,7 +87,7 @@ export function GlobalNavbar() {
         </Link>
 
         <div className="flex items-center gap-2 md:gap-4">
-          
+
           {/* Points*/}
           <div
             key={user.totalPoints}
@@ -125,15 +125,12 @@ export function GlobalNavbar() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link
-                  href="/login"
-                  onClick={() => localStorage.removeItem('auth_token')}
-                  className="flex items-center text-destructive"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Log out
-                </Link>
+              <DropdownMenuItem
+                onClick={() => logout()}
+                className="flex items-center text-destructive cursor-pointer"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

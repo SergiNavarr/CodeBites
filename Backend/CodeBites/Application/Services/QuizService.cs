@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Quiz;
+using Application.DTOs.User;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
@@ -50,7 +51,6 @@ namespace Application.Services
                 var question = quiz.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
                 if (question != null)
                 {
-                    // Buscamos la opción correcta dentro de la pregunta cargada
                     var correctOption = question.Options.FirstOrDefault(o => o.IsCorrect);
                     if (correctOption != null && correctOption.Id == answer.SelectedOptionId)
                     {
@@ -63,9 +63,13 @@ namespace Application.Services
             bool passed = percentage >= 0.6;
 
             int pointsEarned = 0;
+            var newAchievements = new List<UserAchievementDto>();
+
             if (passed)
             {
-                pointsEarned = await _lessonService.CompleteLessonAsync(quiz.LessonId, userId);
+                var result = await _lessonService.CompleteLessonAsync(quiz.LessonId, userId);
+                pointsEarned = result.Points;
+                newAchievements = result.NewAchievements;
             }
 
             return new QuizResultDto
@@ -74,6 +78,7 @@ namespace Application.Services
                 PointsEarned = pointsEarned,
                 CorrectAnswersCount = correctCount,
                 TotalQuestions = totalQuestions,
+                NewAchievements = newAchievements,
                 Message = passed
                     ? "¡Increíble! Has dominado esta lección."
                     : "Casi lo tienes. Revisa el contenido e inténtalo de nuevo."

@@ -46,16 +46,13 @@ namespace API.Controllers
         {
             try
             {
-                var pointsEarned = await _lessonService.CompleteLessonAsync(id, CurrentUserId);
-
-                // Esto devuelve una lista de los logros desbloqueados en este momento
-                var unlockedAchievements = await _achievementService.CheckAndUnlockAchievementsAsync(CurrentUserId);
+                var result = await _lessonService.CompleteLessonAsync(id, CurrentUserId);
 
                 return Ok(new
                 {
                     message = "¡Lección completada!",
-                    points = pointsEarned,
-                    newAchievements = unlockedAchievements
+                    points = result.Points,
+                    newAchievements = result.NewAchievements
                 });
             }
             catch (Exception ex)

@@ -114,9 +114,10 @@ export interface QuizSubmission {
 export interface QuizResult {
   success: boolean;
   pointsEarned: number;
-  correctAnswersCount: number;
   totalQuestions: number;
+  correctAnswersCount: number;
   message: string;
+  newAchievements?: any[];
 }
 
 export interface UserAchievement {

@@ -1,5 +1,6 @@
-﻿using Application.Interfaces;
-using Application.DTOs.Lesson; // Asegúrate de que este namespace coincida con tus DTOs
+﻿using Application.DTOs.Lesson;
+using Application.DTOs.User;
+using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -54,15 +55,16 @@ namespace Application.Services
             return dto;
         }
 
-        public async Task<int> CompleteLessonAsync(Guid lessonId, Guid userId)
+        public async Task<(int Points, List<UserAchievementDto> NewAchievements)> CompleteLessonAsync(Guid lessonId, Guid userId)
         {
             var lesson = await _lessonRepo.GetByIdAsync(lessonId);
-            if (lesson == null) return 0;
+
+            if (lesson == null) return (0, new List<UserAchievementDto>());
 
             var alreadyCompleted = (await _progressRepo.FindAsync(p =>
                 p.UserId == userId && p.LessonId == lessonId)).Any();
 
-            if (alreadyCompleted) return 0;
+            if (alreadyCompleted) return (0, new List<UserAchievementDto>());
 
             var progress = new UserProgress
             {
@@ -79,37 +81,31 @@ namespace Application.Services
             if (user != null)
             {
                 user.TotalPoints += lesson.PointsReward;
-
                 var today = DateTime.UtcNow.Date;
                 var lastActivityDate = user.LastActivityAt?.Date;
 
-                if (lastActivityDate == null)
-                {
-                    user.CurrentStreak = 1;
-                }
-                else if (lastActivityDate == today)
-                {
-                    // Ya hizo actividad hoy, mantenemos la racha
-                }
-                else if (lastActivityDate == today.AddDays(-1))
-                {
-                    // Hizo actividad ayer, sumamos racha
-                    user.CurrentStreak++;
-                }
-                else
-                {
-                    // Rompió la racha
-                    user.CurrentStreak = 1;
-                }
+                if (lastActivityDate == null) user.CurrentStreak = 1;
+                else if (lastActivityDate == today) ;
+                else if (lastActivityDate == today.AddDays(-1)) user.CurrentStreak++;
+                else user.CurrentStreak = 1;
 
                 user.LastActivityAt = DateTime.UtcNow;
                 _userRepo.Update(user);
             }
 
             await _userRepo.SaveChangesAsync();
-            await _achievementService.CheckAndUnlockAchievementsAsync(userId);
 
-            return lesson.PointsReward;
+            var newAchievements = await _achievementService.CheckAndUnlockAchievementsAsync(userId);
+
+            var achievementsDto = newAchievements.Select(a => new UserAchievementDto
+            {
+                Name = a.Name,
+                Description = a.Description,
+                IconUrl = a.IconUrl,
+                UnlockedAt = DateTime.UtcNow
+            }).ToList();
+
+            return (lesson.PointsReward, achievementsDto);
         }
 
         public async Task<LessonDetailDto> CreateLessonAsync(CreateLessonDto dto)
