@@ -52,9 +52,6 @@ export default function LandingPage() {
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="h-12 px-8 text-base" asChild>
-              <Link href="/dashboard">Ver Rutas de Aprendizaje</Link>
-            </Button>
           </div>
 
           {/* CODE DEMO VISUAL */}

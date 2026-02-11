@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { UserService } from '@/lib/services/userService'
 import { UserResponse } from '@/lib/types'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 interface AuthContextType {
   user: UserResponse | null
@@ -17,7 +17,9 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserResponse | null>(null)
   const [loading, setLoading] = useState(true)
+  
   const router = useRouter()
+  const pathname = usePathname()
 
   /**
    * Sincroniza el estado del usuario con el Backend.
@@ -28,6 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(data)
     } catch (error) {
       setUser(null)
+      localStorage.removeItem('auth_token') // Limpiar token si expiró o es inválido
     } finally {
       setLoading(false)
     }
@@ -42,6 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push("/")
   }
 
+  // Verificación inicial de sesión al cargar la app
   useEffect(() => {
     const token = localStorage.getItem('auth_token')
     if (token) {
@@ -50,6 +54,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false)
     }
   }, [])
+
+  // Control de Rutas (Route Guarding)
+  useEffect(() => {
+    if (!loading) {
+      const publicPaths = ['/', '/login', '/register']
+      const isPublicPath = publicPaths.includes(pathname)
+
+      if (user && isPublicPath) {
+        router.replace('/dashboard')
+      } else if (!user && !isPublicPath) {
+        router.replace('/')
+      }
+    }
+  }, [user, loading, pathname, router])
 
   return (
     <AuthContext.Provider value={{ user, loading, refreshUser, logout }}>

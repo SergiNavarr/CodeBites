@@ -137,28 +137,27 @@ export default function LessonPage() {
     return (
       <div className="min-h-screen bg-background">
         <GlobalNavbar />
-        <main className="container mx-auto flex flex-col items-center justify-center px-4 py-20 text-center animate-in fade-in zoom-in duration-500">
+        <main className="container mx-auto flex flex-col items-center justify-center px-4 py-10 md:py-20 text-center animate-in fade-in zoom-in duration-500">
           
-          {/* Animación simple de trofeo */}
           <div className="relative mb-8">
              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
-             <Trophy className="relative h-24 w-24 text-primary animate-bounce" />
+             <Trophy className="relative h-20 w-20 md:h-24 md:w-24 text-primary animate-bounce" />
           </div>
 
-          <h1 className="text-5xl font-black mb-4 uppercase tracking-tighter italic bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
+          <h1 className="text-3xl md:text-5xl font-black mb-4 uppercase tracking-tighter italic bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500 break-words max-w-full">
             ¡Bite Completado!
           </h1>
           
-          <p className="text-7xl font-black text-foreground mb-2">
-            +{pointsEarned} <span className="text-2xl text-muted-foreground align-top">XP</span>
+          <p className="text-5xl md:text-7xl font-black text-foreground mb-2">
+            +{pointsEarned} <span className="text-xl md:text-2xl text-muted-foreground align-top">XP</span>
           </p>
-          <p className="text-muted-foreground mb-12">¡Sigue así, la racha continúa!</p>
+          <p className="text-muted-foreground mb-8 md:mb-12">¡Sigue así, la racha continúa!</p>
 
-          <div className="flex gap-4">
-            <Button size="lg" className="h-12 px-8 shadow-xl shadow-primary/20" asChild>
+          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+            <Button size="lg" className="h-12 w-full md:w-auto px-8 shadow-xl shadow-primary/20" asChild>
                 <Link href={`/lessons/${categoryId}`}>Continuar Aprendiendo</Link>
             </Button>
-            <Button variant="outline" size="lg" className="h-12 px-8" asChild>
+            <Button variant="outline" size="lg" className="h-12 w-full md:w-auto px-8" asChild>
                 <Link href="/dashboard">Volver al Panel</Link>
             </Button>
           </div>
@@ -171,27 +170,35 @@ export default function LessonPage() {
     <div className="min-h-screen bg-background pb-20">
       <GlobalNavbar />
       <main className="container mx-auto px-4 py-8">
-        <Button variant="ghost" onClick={() => showQuiz ? setShowQuiz(false) : router.push(`/lessons/${categoryId}`)} className="mb-6">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          {showQuiz ? "Volver a la teoría" : "Volver al curso"}
-        </Button>
+        
+        {/* Header de navegación */}
+        <div className="mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => showQuiz ? setShowQuiz(false) : router.push(`/lessons/${categoryId}`)} 
+            className="pl-0 hover:pl-2 transition-all"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            {showQuiz ? "Volver a la teoría" : "Volver al curso"}
+          </Button>
+        </div>
 
         <div className="mx-auto max-w-4xl">
           {!showQuiz ? (
             <>
-              <Card className="mb-8 border-border/50 bg-card/50 shadow-2xl overflow-hidden">
-                <CardHeader className="border-b border-border/10 bg-muted/20 pb-8">
+              <Card className="mb-8 border-border/50 bg-card/50 shadow-lg md:shadow-2xl overflow-hidden">
+                <CardHeader className="border-b border-border/10 bg-muted/20 pb-6 md:pb-8">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="rounded-full bg-primary/10 px-4 py-1.5 text-xs font-black text-primary uppercase border border-primary/20">
+                    <span className="rounded-full bg-primary/10 px-3 py-1 md:px-4 md:py-1.5 text-xs font-black text-primary uppercase border border-primary/20">
                       {lesson?.points} XP
                     </span>
                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Teoría</span>
                   </div>
-                  <CardTitle className="text-4xl font-black tracking-tighter italic leading-none">
+                  <CardTitle className="text-2xl md:text-4xl font-black tracking-tighter italic leading-tight md:leading-none break-words">
                     {lesson?.title}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="pt-10 px-6 md:px-10">
+                <CardContent className="pt-6 px-4 md:pt-10 md:px-10 prose prose-invert max-w-none">
                   {lesson?.content ? (
                     <MarkdownRenderer content={lesson.content} />
                   ) : (
@@ -200,11 +207,11 @@ export default function LessonPage() {
                 </CardContent>
               </Card>
 
-              <div className="flex justify-end pb-20">
+              <div className="flex justify-center md:justify-end pb-10 md:pb-20">
                 {quiz ? (
                   <Button
                     size="lg"
-                    className="h-16 px-12 text-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-transform"
+                    className="w-full md:w-auto h-14 md:h-16 px-6 md:px-12 text-lg md:text-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-transform whitespace-normal text-center"
                     onClick={() => setShowQuiz(true)}
                   >
                     Continuar al Quiz
@@ -212,7 +219,7 @@ export default function LessonPage() {
                 ) : (
                   <Button
                     size="lg"
-                    className="h-16 px-12 text-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-transform"
+                    className="w-full md:w-auto h-14 md:h-16 px-6 md:px-12 text-lg md:text-xl font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-transform"
                     onClick={handleSimpleComplete}
                     disabled={isCompleting}
                   >
@@ -227,6 +234,7 @@ export default function LessonPage() {
               </div>
             </>
           ) : (
+            // Componente de Quiz
             quiz && <QuizComponent quiz={quiz} onComplete={handleQuizSubmit} isSubmitting={isCompleting} />
           )}
         </div>
