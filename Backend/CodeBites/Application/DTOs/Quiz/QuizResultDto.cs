@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.DTOs.User;
 
 namespace Application.DTOs.Quiz
 {
@@ -13,5 +14,6 @@ namespace Application.DTOs.Quiz
         public int CorrectAnswersCount { get; set; }
         public int TotalQuestions { get; set; }
         public string Message { get; set; } = string.Empty;
+        public List<UserAchievementDto> NewAchievements { get; set; } = new();
     }
 }

@@ -108,6 +108,24 @@ export default function LessonPage() {
           description: `Has ganado +${result.pointsEarned} XP.`,
         })
         
+        if (result.newAchievements && result.newAchievements.length > 0) {
+          result.newAchievements.forEach((achievement: any) => {
+            toast.success("¡LOGRO DESBLOQUEADO!", {
+              description: achievement.name,
+              icon: <Trophy className="h-5 w-5 text-yellow-500 fill-yellow-500/20" />,
+              duration: 6000,
+              style: {
+                borderColor: "#eab308",
+                backgroundColor: "hsl(var(--background))", 
+                borderWidth: "2px"
+              },
+              action: {
+                label: "Ver",
+                onClick: () => router.push("/profile") 
+              }
+            })
+          })
+        }
 
       } else {
         toast.error("Quiz no superado", {
